@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,6 @@ import com.liferay.mail.model.Attachment;
 import com.liferay.mail.model.impl.AttachmentImpl;
 import com.liferay.mail.model.impl.AttachmentModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -36,6 +35,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -49,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the attachment service.
@@ -111,6 +112,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the matching attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findByMessageId(long messageId)
 		throws SystemException {
 		return findByMessageId(messageId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -130,6 +132,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the range of matching attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findByMessageId(long messageId, int start, int end)
 		throws SystemException {
 		return findByMessageId(messageId, start, end, null);
@@ -149,6 +152,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the ordered range of matching attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findByMessageId(long messageId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -255,6 +259,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @throws com.liferay.mail.NoSuchAttachmentException if a matching attachment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment findByMessageId_First(long messageId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAttachmentException, SystemException {
@@ -285,6 +290,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the first matching attachment, or <code>null</code> if a matching attachment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment fetchByMessageId_First(long messageId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Attachment> list = findByMessageId(messageId, 0, 1,
@@ -306,6 +312,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @throws com.liferay.mail.NoSuchAttachmentException if a matching attachment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment findByMessageId_Last(long messageId,
 		OrderByComparator orderByComparator)
 		throws NoSuchAttachmentException, SystemException {
@@ -336,9 +343,14 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the last matching attachment, or <code>null</code> if a matching attachment could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment fetchByMessageId_Last(long messageId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByMessageId(messageId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Attachment> list = findByMessageId(messageId, count - 1, count,
 				orderByComparator);
@@ -360,6 +372,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @throws com.liferay.mail.NoSuchAttachmentException if a attachment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment[] findByMessageId_PrevAndNext(long attachmentId,
 		long messageId, OrderByComparator orderByComparator)
 		throws NoSuchAttachmentException, SystemException {
@@ -501,6 +514,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @param messageId the message ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByMessageId(long messageId) throws SystemException {
 		for (Attachment attachment : findByMessageId(messageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -515,6 +529,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the number of matching attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByMessageId(long messageId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_MESSAGEID;
 
@@ -562,11 +577,16 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 
 	private static final String _FINDER_COLUMN_MESSAGEID_MESSAGEID_2 = "attachment.messageId = ?";
 
+	public AttachmentPersistenceImpl() {
+		setModelClass(Attachment.class);
+	}
+
 	/**
 	 * Caches the attachment in the entity cache if it is enabled.
 	 *
 	 * @param attachment the attachment
 	 */
+	@Override
 	public void cacheResult(Attachment attachment) {
 		EntityCacheUtil.putResult(AttachmentModelImpl.ENTITY_CACHE_ENABLED,
 			AttachmentImpl.class, attachment.getPrimaryKey(), attachment);
@@ -579,6 +599,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 *
 	 * @param attachments the attachments
 	 */
+	@Override
 	public void cacheResult(List<Attachment> attachments) {
 		for (Attachment attachment : attachments) {
 			if (EntityCacheUtil.getResult(
@@ -645,6 +666,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @param attachmentId the primary key for the new attachment
 	 * @return the new attachment
 	 */
+	@Override
 	public Attachment create(long attachmentId) {
 		Attachment attachment = new AttachmentImpl();
 
@@ -662,9 +684,10 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @throws com.liferay.mail.NoSuchAttachmentException if a attachment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment remove(long attachmentId)
 		throws NoSuchAttachmentException, SystemException {
-		return remove(Long.valueOf(attachmentId));
+		return remove((Serializable)attachmentId);
 	}
 
 	/**
@@ -781,7 +804,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 			if ((attachmentModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MESSAGEID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(attachmentModelImpl.getOriginalMessageId())
+						attachmentModelImpl.getOriginalMessageId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MESSAGEID,
@@ -789,9 +812,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_MESSAGEID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(attachmentModelImpl.getMessageId())
-					};
+				args = new Object[] { attachmentModelImpl.getMessageId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_MESSAGEID,
 					args);
@@ -834,13 +855,24 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 *
 	 * @param primaryKey the primary key of the attachment
 	 * @return the attachment
-	 * @throws com.liferay.portal.NoSuchModelException if a attachment with the primary key could not be found
+	 * @throws com.liferay.mail.NoSuchAttachmentException if a attachment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Attachment findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchAttachmentException, SystemException {
+		Attachment attachment = fetchByPrimaryKey(primaryKey);
+
+		if (attachment == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchAttachmentException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return attachment;
 	}
 
 	/**
@@ -851,20 +883,10 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @throws com.liferay.mail.NoSuchAttachmentException if a attachment with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Attachment findByPrimaryKey(long attachmentId)
 		throws NoSuchAttachmentException, SystemException {
-		Attachment attachment = fetchByPrimaryKey(attachmentId);
-
-		if (attachment == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + attachmentId);
-			}
-
-			throw new NoSuchAttachmentException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				attachmentId);
-		}
-
-		return attachment;
+		return findByPrimaryKey((Serializable)attachmentId);
 	}
 
 	/**
@@ -877,20 +899,8 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	@Override
 	public Attachment fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the attachment with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param attachmentId the primary key of the attachment
-	 * @return the attachment, or <code>null</code> if a attachment with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Attachment fetchByPrimaryKey(long attachmentId)
-		throws SystemException {
 		Attachment attachment = (Attachment)EntityCacheUtil.getResult(AttachmentModelImpl.ENTITY_CACHE_ENABLED,
-				AttachmentImpl.class, attachmentId);
+				AttachmentImpl.class, primaryKey);
 
 		if (attachment == _nullAttachment) {
 			return null;
@@ -903,19 +913,19 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 				session = openSession();
 
 				attachment = (Attachment)session.get(AttachmentImpl.class,
-						Long.valueOf(attachmentId));
+						primaryKey);
 
 				if (attachment != null) {
 					cacheResult(attachment);
 				}
 				else {
 					EntityCacheUtil.putResult(AttachmentModelImpl.ENTITY_CACHE_ENABLED,
-						AttachmentImpl.class, attachmentId, _nullAttachment);
+						AttachmentImpl.class, primaryKey, _nullAttachment);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(AttachmentModelImpl.ENTITY_CACHE_ENABLED,
-					AttachmentImpl.class, attachmentId);
+					AttachmentImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -928,11 +938,25 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	}
 
 	/**
+	 * Returns the attachment with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param attachmentId the primary key of the attachment
+	 * @return the attachment, or <code>null</code> if a attachment with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Attachment fetchByPrimaryKey(long attachmentId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)attachmentId);
+	}
+
+	/**
 	 * Returns all the attachments.
 	 *
 	 * @return the attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -949,6 +973,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the range of attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -967,6 +992,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the ordered range of attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Attachment> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1052,6 +1078,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Attachment attachment : findAll()) {
 			remove(attachment);
@@ -1064,6 +1091,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	 * @return the number of attachments
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1095,6 +1123,11 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the attachment persistence.
 	 */
@@ -1109,7 +1142,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Attachment>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1137,6 +1170,9 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(AttachmentPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"size"
+			});
 	private static Attachment _nullAttachment = new AttachmentImpl() {
 			@Override
 			public Object clone() {
@@ -1150,6 +1186,7 @@ public class AttachmentPersistenceImpl extends BasePersistenceImpl<Attachment>
 		};
 
 	private static CacheModel<Attachment> _nullAttachmentCacheModel = new CacheModel<Attachment>() {
+			@Override
 			public Attachment toEntityModel() {
 				return _nullAttachment;
 			}

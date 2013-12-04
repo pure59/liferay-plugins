@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -26,7 +26,7 @@
 	int messagePos = 0;
 
 	while ((messagePos = html.indexOf("<div class=\"message-container", messagePos)) > -1) {
-		int x = html.indexOf("<ul class=\"edit-controls lfr-component\">", messagePos);
+		int x = html.indexOf("<ul class=\"edit-controls", messagePos);
 		int y = html.indexOf("</ul>", x);
 
 		int messageIdPos = html.indexOf("_19_messageId=", x);
@@ -111,6 +111,9 @@
 			html = sb.toString();
 
 			messagePos = y + customHTML.length();
+		}
+		else {
+			messagePos++;
 		}
 	}
 	%>

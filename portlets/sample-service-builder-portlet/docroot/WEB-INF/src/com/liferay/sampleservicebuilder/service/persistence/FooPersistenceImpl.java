@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,6 @@
 
 package com.liferay.sampleservicebuilder.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -31,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -51,6 +51,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the foo service.
@@ -112,6 +113,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid(String uuid) throws SystemException {
 		return findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -129,6 +131,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid(String uuid, int start, int end)
 		throws SystemException {
 		return findByUuid(uuid, start, end, null);
@@ -148,6 +151,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid(String uuid, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -191,16 +195,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_SELECT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -223,7 +229,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -265,6 +271,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByUuid_First(String uuid, OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
 		Foo foo = fetchByUuid_First(uuid, orderByComparator);
@@ -293,6 +300,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the first matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUuid_First(String uuid,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Foo> list = findByUuid(uuid, 0, 1, orderByComparator);
@@ -313,6 +321,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByUuid_Last(String uuid, OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
 		Foo foo = fetchByUuid_Last(uuid, orderByComparator);
@@ -341,9 +350,14 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the last matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUuid_Last(String uuid, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByUuid(uuid);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Foo> list = findByUuid(uuid, count - 1, count, orderByComparator);
 
@@ -364,6 +378,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo[] findByUuid_PrevAndNext(long fooId, String uuid,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -408,16 +423,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 		query.append(_SQL_SELECT_FOO_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -488,7 +505,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -516,6 +533,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param uuid the uuid
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid(String uuid) throws SystemException {
 		for (Foo foo : findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
@@ -530,6 +548,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid(String uuid) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
@@ -543,16 +562,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_COUNT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_UUID_2);
 			}
 
 			String sql = query.toString();
@@ -566,7 +587,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -589,7 +610,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 	private static final String _FINDER_COLUMN_UUID_UUID_1 = "foo.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "foo.uuid = ?";
-	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = ?)";
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = '')";
 	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(FooModelImpl.ENTITY_CACHE_ENABLED,
 			FooModelImpl.FINDER_CACHE_ENABLED, FooImpl.class,
 			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
@@ -610,6 +631,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByUUID_G(String uuid, long groupId)
 		throws NoSuchFooException, SystemException {
 		Foo foo = fetchByUUID_G(uuid, groupId);
@@ -645,6 +667,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		return fetchByUUID_G(uuid, groupId, true);
@@ -659,6 +682,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUUID_G(String uuid, long groupId,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { uuid, groupId };
@@ -684,16 +708,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_SELECT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
@@ -709,7 +735,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -762,6 +788,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the foo that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo removeByUUID_G(String uuid, long groupId)
 		throws NoSuchFooException, SystemException {
 		Foo foo = findByUUID_G(uuid, groupId);
@@ -777,6 +804,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUUID_G(String uuid, long groupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
@@ -791,16 +819,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_COUNT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_G_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_G_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_G_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_G_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_G_GROUPID_2);
@@ -816,7 +846,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -841,7 +871,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "foo.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "foo.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "foo.groupId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(FooModelImpl.ENTITY_CACHE_ENABLED,
 			FooModelImpl.FINDER_CACHE_ENABLED, FooImpl.class,
@@ -873,6 +903,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -893,6 +924,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid_C(String uuid, long companyId, int start,
 		int end) throws SystemException {
 		return findByUuid_C(uuid, companyId, start, end, null);
@@ -913,6 +945,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByUuid_C(String uuid, long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -961,16 +994,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_SELECT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -995,7 +1030,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1040,6 +1075,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1073,6 +1109,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the first matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Foo> list = findByUuid_C(uuid, companyId, 0, 1, orderByComparator);
@@ -1094,6 +1131,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1127,9 +1165,14 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the last matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByUuid_C(uuid, companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Foo> list = findByUuid_C(uuid, companyId, count - 1, count,
 				orderByComparator);
@@ -1152,6 +1195,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo[] findByUuid_C_PrevAndNext(long fooId, String uuid,
 		long companyId, OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1197,16 +1241,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 		query.append(_SQL_SELECT_FOO_WHERE);
 
+		boolean bindUuid = false;
+
 		if (uuid == null) {
 			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 		}
+		else if (uuid.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
 		else {
-			if (uuid.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-			}
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 		}
 
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1279,7 +1325,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (uuid != null) {
+		if (bindUuid) {
 			qPos.add(uuid);
 		}
 
@@ -1310,6 +1356,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		for (Foo foo : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
@@ -1326,6 +1373,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByUuid_C(String uuid, long companyId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
@@ -1340,16 +1388,18 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			query.append(_SQL_COUNT_FOO_WHERE);
 
+			boolean bindUuid = false;
+
 			if (uuid == null) {
 				query.append(_FINDER_COLUMN_UUID_C_UUID_1);
 			}
+			else if (uuid.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+			}
 			else {
-				if (uuid.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_UUID_C_UUID_2);
-				}
+				bindUuid = true;
+
+				query.append(_FINDER_COLUMN_UUID_C_UUID_2);
 			}
 
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
@@ -1365,7 +1415,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (uuid != null) {
+				if (bindUuid) {
 					qPos.add(uuid);
 				}
 
@@ -1390,7 +1440,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "foo.uuid IS NULL AND ";
 	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "foo.uuid = ? AND ";
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = ?) AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(foo.uuid IS NULL OR foo.uuid = '') AND ";
 	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "foo.companyId = ?";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_FIELD2 = new FinderPath(FooModelImpl.ENTITY_CACHE_ENABLED,
 			FooModelImpl.FINDER_CACHE_ENABLED, FooImpl.class,
@@ -1420,6 +1470,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2) throws SystemException {
 		return findByField2(field2, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1437,6 +1488,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2, int start, int end)
 		throws SystemException {
 		return findByField2(field2, start, end, null);
@@ -1456,6 +1508,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findByField2(boolean field2, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1561,6 +1614,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByField2_First(boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1590,6 +1644,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the first matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByField2_First(boolean field2,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Foo> list = findByField2(field2, 0, 1, orderByComparator);
@@ -1610,6 +1665,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByField2_Last(boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1639,9 +1695,14 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the last matching foo, or <code>null</code> if a matching foo could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo fetchByField2_Last(boolean field2,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByField2(field2);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Foo> list = findByField2(field2, count - 1, count,
 				orderByComparator);
@@ -1663,6 +1724,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo[] findByField2_PrevAndNext(long fooId, boolean field2,
 		OrderByComparator orderByComparator)
 		throws NoSuchFooException, SystemException {
@@ -1803,6 +1865,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param field2 the field2
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByField2(boolean field2) throws SystemException {
 		for (Foo foo : findByField2(field2, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -1817,6 +1880,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of matching foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByField2(boolean field2) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_FIELD2;
 
@@ -1864,17 +1928,22 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 	private static final String _FINDER_COLUMN_FIELD2_FIELD2_2 = "foo.field2 = ?";
 
+	public FooPersistenceImpl() {
+		setModelClass(Foo.class);
+	}
+
 	/**
 	 * Caches the foo in the entity cache if it is enabled.
 	 *
 	 * @param foo the foo
 	 */
+	@Override
 	public void cacheResult(Foo foo) {
 		EntityCacheUtil.putResult(FooModelImpl.ENTITY_CACHE_ENABLED,
 			FooImpl.class, foo.getPrimaryKey(), foo);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_UUID_G,
-			new Object[] { foo.getUuid(), Long.valueOf(foo.getGroupId()) }, foo);
+			new Object[] { foo.getUuid(), foo.getGroupId() }, foo);
 
 		foo.resetOriginalValues();
 	}
@@ -1884,6 +1953,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @param foos the foos
 	 */
+	@Override
 	public void cacheResult(List<Foo> foos) {
 		for (Foo foo : foos) {
 			if (EntityCacheUtil.getResult(FooModelImpl.ENTITY_CACHE_ENABLED,
@@ -1949,9 +2019,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 	protected void cacheUniqueFindersCache(Foo foo) {
 		if (foo.isNew()) {
-			Object[] args = new Object[] {
-					foo.getUuid(), Long.valueOf(foo.getGroupId())
-				};
+			Object[] args = new Object[] { foo.getUuid(), foo.getGroupId() };
 
 			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 				Long.valueOf(1));
@@ -1962,9 +2030,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			if ((fooModelImpl.getColumnBitmask() &
 					FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						foo.getUuid(), Long.valueOf(foo.getGroupId())
-					};
+				Object[] args = new Object[] { foo.getUuid(), foo.getGroupId() };
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
 					Long.valueOf(1));
@@ -1976,9 +2042,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	protected void clearUniqueFindersCache(Foo foo) {
 		FooModelImpl fooModelImpl = (FooModelImpl)foo;
 
-		Object[] args = new Object[] {
-				foo.getUuid(), Long.valueOf(foo.getGroupId())
-			};
+		Object[] args = new Object[] { foo.getUuid(), foo.getGroupId() };
 
 		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
 		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
@@ -1987,7 +2051,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
 			args = new Object[] {
 					fooModelImpl.getOriginalUuid(),
-					Long.valueOf(fooModelImpl.getOriginalGroupId())
+					fooModelImpl.getOriginalGroupId()
 				};
 
 			FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
@@ -2001,6 +2065,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @param fooId the primary key for the new foo
 	 * @return the new foo
 	 */
+	@Override
 	public Foo create(long fooId) {
 		Foo foo = new FooImpl();
 
@@ -2022,8 +2087,9 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo remove(long fooId) throws NoSuchFooException, SystemException {
-		return remove(Long.valueOf(fooId));
+		return remove((Serializable)fooId);
 	}
 
 	/**
@@ -2159,7 +2225,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						fooModelImpl.getOriginalUuid(),
-						Long.valueOf(fooModelImpl.getOriginalCompanyId())
+						fooModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -2167,8 +2233,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 					args);
 
 				args = new Object[] {
-						fooModelImpl.getUuid(),
-						Long.valueOf(fooModelImpl.getCompanyId())
+						fooModelImpl.getUuid(), fooModelImpl.getCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
@@ -2178,15 +2243,13 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 			if ((fooModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2.getColumnBitmask()) != 0) {
-				Object[] args = new Object[] {
-						Boolean.valueOf(fooModelImpl.getOriginalField2())
-					};
+				Object[] args = new Object[] { fooModelImpl.getOriginalField2() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FIELD2, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2,
 					args);
 
-				args = new Object[] { Boolean.valueOf(fooModelImpl.getField2()) };
+				args = new Object[] { fooModelImpl.getField2() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_FIELD2, args);
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_FIELD2,
@@ -2235,13 +2298,24 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @param primaryKey the primary key of the foo
 	 * @return the foo
-	 * @throws com.liferay.portal.NoSuchModelException if a foo with the primary key could not be found
+	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Foo findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchFooException, SystemException {
+		Foo foo = fetchByPrimaryKey(primaryKey);
+
+		if (foo == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchFooException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return foo;
 	}
 
 	/**
@@ -2252,20 +2326,10 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @throws com.liferay.sampleservicebuilder.NoSuchFooException if a foo with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Foo findByPrimaryKey(long fooId)
 		throws NoSuchFooException, SystemException {
-		Foo foo = fetchByPrimaryKey(fooId);
-
-		if (foo == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + fooId);
-			}
-
-			throw new NoSuchFooException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				fooId);
-		}
-
-		return foo;
+		return findByPrimaryKey((Serializable)fooId);
 	}
 
 	/**
@@ -2278,19 +2342,8 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	@Override
 	public Foo fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the foo with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param fooId the primary key of the foo
-	 * @return the foo, or <code>null</code> if a foo with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Foo fetchByPrimaryKey(long fooId) throws SystemException {
 		Foo foo = (Foo)EntityCacheUtil.getResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-				FooImpl.class, fooId);
+				FooImpl.class, primaryKey);
 
 		if (foo == _nullFoo) {
 			return null;
@@ -2302,19 +2355,19 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 			try {
 				session = openSession();
 
-				foo = (Foo)session.get(FooImpl.class, Long.valueOf(fooId));
+				foo = (Foo)session.get(FooImpl.class, primaryKey);
 
 				if (foo != null) {
 					cacheResult(foo);
 				}
 				else {
 					EntityCacheUtil.putResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-						FooImpl.class, fooId, _nullFoo);
+						FooImpl.class, primaryKey, _nullFoo);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(FooModelImpl.ENTITY_CACHE_ENABLED,
-					FooImpl.class, fooId);
+					FooImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2327,11 +2380,24 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	}
 
 	/**
+	 * Returns the foo with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param fooId the primary key of the foo
+	 * @return the foo, or <code>null</code> if a foo with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Foo fetchByPrimaryKey(long fooId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)fooId);
+	}
+
+	/**
 	 * Returns all the foos.
 	 *
 	 * @return the foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2348,6 +2414,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the range of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -2365,6 +2432,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the ordered range of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Foo> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2449,6 +2517,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Foo foo : findAll()) {
 			remove(foo);
@@ -2461,6 +2530,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	 * @return the number of foos
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2492,6 +2562,11 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the foo persistence.
 	 */
@@ -2506,7 +2581,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Foo>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2534,6 +2609,9 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(FooPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 	private static Foo _nullFoo = new FooImpl() {
 			@Override
 			public Object clone() {
@@ -2547,6 +2625,7 @@ public class FooPersistenceImpl extends BasePersistenceImpl<Foo>
 		};
 
 	private static CacheModel<Foo> _nullFooCacheModel = new CacheModel<Foo>() {
+			@Override
 			public Foo toEntityModel() {
 				return _nullFoo;
 			}

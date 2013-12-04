@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -163,26 +163,32 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	public TasksEntryModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _tasksEntryId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setTasksEntryId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_tasksEntryId);
+		return _tasksEntryId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return TasksEntry.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return TasksEntry.class.getName();
 	}
@@ -297,19 +303,23 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public long getTasksEntryId() {
 		return _tasksEntryId;
 	}
 
+	@Override
 	public void setTasksEntryId(long tasksEntryId) {
 		_tasksEntryId = tasksEntryId;
 	}
 
 	@JSON
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -327,19 +337,23 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_companyId = companyId;
 	}
 
 	@JSON
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -352,10 +366,12 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -365,6 +381,7 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -374,15 +391,18 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
 	@JSON
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_columnBitmask = -1L;
 
@@ -390,15 +410,18 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_modifiedDate = modifiedDate;
 	}
 
 	@JSON
+	@Override
 	public String getTitle() {
 		if (_title == null) {
 			return StringPool.BLANK;
@@ -408,15 +431,18 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		}
 	}
 
+	@Override
 	public void setTitle(String title) {
 		_title = title;
 	}
 
 	@JSON
+	@Override
 	public int getPriority() {
 		return _priority;
 	}
 
+	@Override
 	public void setPriority(int priority) {
 		_columnBitmask = -1L;
 
@@ -424,10 +450,12 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public long getAssigneeUserId() {
 		return _assigneeUserId;
 	}
 
+	@Override
 	public void setAssigneeUserId(long assigneeUserId) {
 		_columnBitmask |= ASSIGNEEUSERID_COLUMN_BITMASK;
 
@@ -440,11 +468,13 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		_assigneeUserId = assigneeUserId;
 	}
 
+	@Override
 	public String getAssigneeUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getAssigneeUserId(), "uuid",
 			_assigneeUserUuid);
 	}
 
+	@Override
 	public void setAssigneeUserUuid(String assigneeUserUuid) {
 		_assigneeUserUuid = assigneeUserUuid;
 	}
@@ -454,10 +484,12 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public long getResolverUserId() {
 		return _resolverUserId;
 	}
 
+	@Override
 	public void setResolverUserId(long resolverUserId) {
 		_columnBitmask |= RESOLVERUSERID_COLUMN_BITMASK;
 
@@ -470,11 +502,13 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		_resolverUserId = resolverUserId;
 	}
 
+	@Override
 	public String getResolverUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getResolverUserId(), "uuid",
 			_resolverUserUuid);
 	}
 
+	@Override
 	public void setResolverUserUuid(String resolverUserUuid) {
 		_resolverUserUuid = resolverUserUuid;
 	}
@@ -484,10 +518,12 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public Date getDueDate() {
 		return _dueDate;
 	}
 
+	@Override
 	public void setDueDate(Date dueDate) {
 		_columnBitmask = -1L;
 
@@ -495,19 +531,23 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 	}
 
 	@JSON
+	@Override
 	public Date getFinishDate() {
 		return _finishDate;
 	}
 
+	@Override
 	public void setFinishDate(Date finishDate) {
 		_finishDate = finishDate;
 	}
 
 	@JSON
+	@Override
 	public int getStatus() {
 		return _status;
 	}
 
+	@Override
 	public void setStatus(int status) {
 		_status = status;
 	}
@@ -563,6 +603,7 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		return tasksEntryImpl;
 	}
 
+	@Override
 	public int compareTo(TasksEntry tasksEntry) {
 		int value = 0;
 
@@ -597,18 +638,15 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof TasksEntry)) {
 			return false;
 		}
 
-		TasksEntry tasksEntry = null;
-
-		try {
-			tasksEntry = (TasksEntry)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		TasksEntry tasksEntry = (TasksEntry)obj;
 
 		long primaryKey = tasksEntry.getPrimaryKey();
 
@@ -760,6 +798,7 @@ public class TasksEntryModelImpl extends BaseModelImpl<TasksEntry>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(46);
 

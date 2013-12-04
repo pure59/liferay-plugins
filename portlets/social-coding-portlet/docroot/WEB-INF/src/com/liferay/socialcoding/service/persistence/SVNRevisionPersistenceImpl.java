@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,6 @@
 
 package com.liferay.socialcoding.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -113,6 +112,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNUserId(String svnUserId)
 		throws SystemException {
 		return findBySVNUserId(svnUserId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -132,6 +132,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNUserId(String svnUserId, int start,
 		int end) throws SystemException {
 		return findBySVNUserId(svnUserId, start, end, null);
@@ -151,6 +152,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the ordered range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNUserId(String svnUserId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -194,16 +196,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 			query.append(_SQL_SELECT_SVNREVISION_WHERE);
 
+			boolean bindSvnUserId = false;
+
 			if (svnUserId == null) {
 				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_1);
 			}
+			else if (svnUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
+			}
 			else {
-				if (svnUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
-				}
+				bindSvnUserId = true;
+
+				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
 			}
 
 			if (orderByComparator != null) {
@@ -226,7 +230,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (svnUserId != null) {
+				if (bindSvnUserId) {
 					qPos.add(svnUserId);
 				}
 
@@ -269,6 +273,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNUserId_First(String svnUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -299,6 +304,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNUserId_First(String svnUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<SVNRevision> list = findBySVNUserId(svnUserId, 0, 1,
@@ -320,6 +326,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNUserId_Last(String svnUserId,
 		OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -350,9 +357,14 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNUserId_Last(String svnUserId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countBySVNUserId(svnUserId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<SVNRevision> list = findBySVNUserId(svnUserId, count - 1, count,
 				orderByComparator);
@@ -374,6 +386,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision[] findBySVNUserId_PrevAndNext(long svnRevisionId,
 		String svnUserId, OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -419,16 +432,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 		query.append(_SQL_SELECT_SVNREVISION_WHERE);
 
+		boolean bindSvnUserId = false;
+
 		if (svnUserId == null) {
 			query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_1);
 		}
+		else if (svnUserId.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
+		}
 		else {
-			if (svnUserId.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
-			}
+			bindSvnUserId = true;
+
+			query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
 		}
 
 		if (orderByComparator != null) {
@@ -499,7 +514,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (svnUserId != null) {
+		if (bindSvnUserId) {
 			qPos.add(svnUserId);
 		}
 
@@ -527,6 +542,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @param svnUserId the svn user ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeBySVNUserId(String svnUserId) throws SystemException {
 		for (SVNRevision svnRevision : findBySVNUserId(svnUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -541,6 +557,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the number of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countBySVNUserId(String svnUserId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_SVNUSERID;
 
@@ -554,16 +571,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 			query.append(_SQL_COUNT_SVNREVISION_WHERE);
 
+			boolean bindSvnUserId = false;
+
 			if (svnUserId == null) {
 				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_1);
 			}
+			else if (svnUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
+			}
 			else {
-				if (svnUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
-				}
+				bindSvnUserId = true;
+
+				query.append(_FINDER_COLUMN_SVNUSERID_SVNUSERID_2);
 			}
 
 			String sql = query.toString();
@@ -577,7 +596,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (svnUserId != null) {
+				if (bindSvnUserId) {
 					qPos.add(svnUserId);
 				}
 
@@ -600,7 +619,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 	private static final String _FINDER_COLUMN_SVNUSERID_SVNUSERID_1 = "svnRevision.svnUserId IS NULL";
 	private static final String _FINDER_COLUMN_SVNUSERID_SVNUSERID_2 = "svnRevision.svnUserId = ?";
-	private static final String _FINDER_COLUMN_SVNUSERID_SVNUSERID_3 = "(svnRevision.svnUserId IS NULL OR svnRevision.svnUserId = ?)";
+	private static final String _FINDER_COLUMN_SVNUSERID_SVNUSERID_3 = "(svnRevision.svnUserId IS NULL OR svnRevision.svnUserId = '')";
 	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_SVNREPOSITORYID =
 		new FinderPath(SVNRevisionModelImpl.ENTITY_CACHE_ENABLED,
 			SVNRevisionModelImpl.FINDER_CACHE_ENABLED, SVNRevisionImpl.class,
@@ -630,6 +649,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNRepositoryId(long svnRepositoryId)
 		throws SystemException {
 		return findBySVNRepositoryId(svnRepositoryId, QueryUtil.ALL_POS,
@@ -649,6 +669,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNRepositoryId(long svnRepositoryId,
 		int start, int end) throws SystemException {
 		return findBySVNRepositoryId(svnRepositoryId, start, end, null);
@@ -668,6 +689,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the ordered range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNRepositoryId(long svnRepositoryId,
 		int start, int end, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -779,6 +801,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNRepositoryId_First(long svnRepositoryId,
 		OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -809,6 +832,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNRepositoryId_First(long svnRepositoryId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<SVNRevision> list = findBySVNRepositoryId(svnRepositoryId, 0, 1,
@@ -830,6 +854,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNRepositoryId_Last(long svnRepositoryId,
 		OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -860,9 +885,14 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNRepositoryId_Last(long svnRepositoryId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countBySVNRepositoryId(svnRepositoryId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<SVNRevision> list = findBySVNRepositoryId(svnRepositoryId,
 				count - 1, count, orderByComparator);
@@ -884,6 +914,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision[] findBySVNRepositoryId_PrevAndNext(long svnRevisionId,
 		long svnRepositoryId, OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -1025,6 +1056,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @param svnRepositoryId the svn repository ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeBySVNRepositoryId(long svnRepositoryId)
 		throws SystemException {
 		for (SVNRevision svnRevision : findBySVNRepositoryId(svnRepositoryId,
@@ -1040,6 +1072,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the number of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countBySVNRepositoryId(long svnRepositoryId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_SVNREPOSITORYID;
@@ -1119,6 +1152,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNU_SVNR(String svnUserId,
 		long svnRepositoryId) throws SystemException {
 		return findBySVNU_SVNR(svnUserId, svnRepositoryId, QueryUtil.ALL_POS,
@@ -1139,6 +1173,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNU_SVNR(String svnUserId,
 		long svnRepositoryId, int start, int end) throws SystemException {
 		return findBySVNU_SVNR(svnUserId, svnRepositoryId, start, end, null);
@@ -1159,6 +1194,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the ordered range of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findBySVNU_SVNR(String svnUserId,
 		long svnRepositoryId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1208,16 +1244,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 			query.append(_SQL_SELECT_SVNREVISION_WHERE);
 
+			boolean bindSvnUserId = false;
+
 			if (svnUserId == null) {
 				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_1);
 			}
+			else if (svnUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
+			}
 			else {
-				if (svnUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
-				}
+				bindSvnUserId = true;
+
+				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
 			}
 
 			query.append(_FINDER_COLUMN_SVNU_SVNR_SVNREPOSITORYID_2);
@@ -1242,7 +1280,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (svnUserId != null) {
+				if (bindSvnUserId) {
 					qPos.add(svnUserId);
 				}
 
@@ -1288,6 +1326,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNU_SVNR_First(String svnUserId,
 		long svnRepositoryId, OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -1322,6 +1361,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the first matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNU_SVNR_First(String svnUserId,
 		long svnRepositoryId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1345,6 +1385,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findBySVNU_SVNR_Last(String svnUserId,
 		long svnRepositoryId, OrderByComparator orderByComparator)
 		throws NoSuchSVNRevisionException, SystemException {
@@ -1379,10 +1420,15 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the last matching s v n revision, or <code>null</code> if a matching s v n revision could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision fetchBySVNU_SVNR_Last(String svnUserId,
 		long svnRepositoryId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countBySVNU_SVNR(svnUserId, svnRepositoryId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<SVNRevision> list = findBySVNU_SVNR(svnUserId, svnRepositoryId,
 				count - 1, count, orderByComparator);
@@ -1405,6 +1451,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision[] findBySVNU_SVNR_PrevAndNext(long svnRevisionId,
 		String svnUserId, long svnRepositoryId,
 		OrderByComparator orderByComparator)
@@ -1451,16 +1498,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 		query.append(_SQL_SELECT_SVNREVISION_WHERE);
 
+		boolean bindSvnUserId = false;
+
 		if (svnUserId == null) {
 			query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_1);
 		}
+		else if (svnUserId.equals(StringPool.BLANK)) {
+			query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
+		}
 		else {
-			if (svnUserId.equals(StringPool.BLANK)) {
-				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
-			}
-			else {
-				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
-			}
+			bindSvnUserId = true;
+
+			query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
 		}
 
 		query.append(_FINDER_COLUMN_SVNU_SVNR_SVNREPOSITORYID_2);
@@ -1533,7 +1582,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
-		if (svnUserId != null) {
+		if (bindSvnUserId) {
 			qPos.add(svnUserId);
 		}
 
@@ -1564,6 +1613,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @param svnRepositoryId the svn repository ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeBySVNU_SVNR(String svnUserId, long svnRepositoryId)
 		throws SystemException {
 		for (SVNRevision svnRevision : findBySVNU_SVNR(svnUserId,
@@ -1580,6 +1630,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the number of matching s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countBySVNU_SVNR(String svnUserId, long svnRepositoryId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_SVNU_SVNR;
@@ -1594,16 +1645,18 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 			query.append(_SQL_COUNT_SVNREVISION_WHERE);
 
+			boolean bindSvnUserId = false;
+
 			if (svnUserId == null) {
 				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_1);
 			}
+			else if (svnUserId.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
+			}
 			else {
-				if (svnUserId.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
-				}
+				bindSvnUserId = true;
+
+				query.append(_FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2);
 			}
 
 			query.append(_FINDER_COLUMN_SVNU_SVNR_SVNREPOSITORYID_2);
@@ -1619,7 +1672,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				QueryPos qPos = QueryPos.getInstance(q);
 
-				if (svnUserId != null) {
+				if (bindSvnUserId) {
 					qPos.add(svnUserId);
 				}
 
@@ -1644,14 +1697,19 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 	private static final String _FINDER_COLUMN_SVNU_SVNR_SVNUSERID_1 = "svnRevision.svnUserId IS NULL AND ";
 	private static final String _FINDER_COLUMN_SVNU_SVNR_SVNUSERID_2 = "svnRevision.svnUserId = ? AND ";
-	private static final String _FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3 = "(svnRevision.svnUserId IS NULL OR svnRevision.svnUserId = ?) AND ";
+	private static final String _FINDER_COLUMN_SVNU_SVNR_SVNUSERID_3 = "(svnRevision.svnUserId IS NULL OR svnRevision.svnUserId = '') AND ";
 	private static final String _FINDER_COLUMN_SVNU_SVNR_SVNREPOSITORYID_2 = "svnRevision.svnRepositoryId = ?";
+
+	public SVNRevisionPersistenceImpl() {
+		setModelClass(SVNRevision.class);
+	}
 
 	/**
 	 * Caches the s v n revision in the entity cache if it is enabled.
 	 *
 	 * @param svnRevision the s v n revision
 	 */
+	@Override
 	public void cacheResult(SVNRevision svnRevision) {
 		EntityCacheUtil.putResult(SVNRevisionModelImpl.ENTITY_CACHE_ENABLED,
 			SVNRevisionImpl.class, svnRevision.getPrimaryKey(), svnRevision);
@@ -1664,6 +1722,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 *
 	 * @param svnRevisions the s v n revisions
 	 */
+	@Override
 	public void cacheResult(List<SVNRevision> svnRevisions) {
 		for (SVNRevision svnRevision : svnRevisions) {
 			if (EntityCacheUtil.getResult(
@@ -1730,6 +1789,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @param svnRevisionId the primary key for the new s v n revision
 	 * @return the new s v n revision
 	 */
+	@Override
 	public SVNRevision create(long svnRevisionId) {
 		SVNRevision svnRevision = new SVNRevisionImpl();
 
@@ -1747,9 +1807,10 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision remove(long svnRevisionId)
 		throws NoSuchSVNRevisionException, SystemException {
-		return remove(Long.valueOf(svnRevisionId));
+		return remove((Serializable)svnRevisionId);
 	}
 
 	/**
@@ -1886,7 +1947,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 			if ((svnRevisionModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SVNREPOSITORYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(svnRevisionModelImpl.getOriginalSvnRepositoryId())
+						svnRevisionModelImpl.getOriginalSvnRepositoryId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SVNREPOSITORYID,
@@ -1894,9 +1955,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SVNREPOSITORYID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(svnRevisionModelImpl.getSvnRepositoryId())
-					};
+				args = new Object[] { svnRevisionModelImpl.getSvnRepositoryId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SVNREPOSITORYID,
 					args);
@@ -1908,7 +1967,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_SVNU_SVNR.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
 						svnRevisionModelImpl.getOriginalSvnUserId(),
-						Long.valueOf(svnRevisionModelImpl.getOriginalSvnRepositoryId())
+						svnRevisionModelImpl.getOriginalSvnRepositoryId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SVNU_SVNR,
@@ -1918,7 +1977,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				args = new Object[] {
 						svnRevisionModelImpl.getSvnUserId(),
-						Long.valueOf(svnRevisionModelImpl.getSvnRepositoryId())
+						svnRevisionModelImpl.getSvnRepositoryId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_SVNU_SVNR,
@@ -1959,13 +2018,24 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 *
 	 * @param primaryKey the primary key of the s v n revision
 	 * @return the s v n revision
-	 * @throws com.liferay.portal.NoSuchModelException if a s v n revision with the primary key could not be found
+	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public SVNRevision findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchSVNRevisionException, SystemException {
+		SVNRevision svnRevision = fetchByPrimaryKey(primaryKey);
+
+		if (svnRevision == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchSVNRevisionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return svnRevision;
 	}
 
 	/**
@@ -1976,20 +2046,10 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @throws com.liferay.socialcoding.NoSuchSVNRevisionException if a s v n revision with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public SVNRevision findByPrimaryKey(long svnRevisionId)
 		throws NoSuchSVNRevisionException, SystemException {
-		SVNRevision svnRevision = fetchByPrimaryKey(svnRevisionId);
-
-		if (svnRevision == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + svnRevisionId);
-			}
-
-			throw new NoSuchSVNRevisionException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				svnRevisionId);
-		}
-
-		return svnRevision;
+		return findByPrimaryKey((Serializable)svnRevisionId);
 	}
 
 	/**
@@ -2002,20 +2062,8 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	@Override
 	public SVNRevision fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the s v n revision with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param svnRevisionId the primary key of the s v n revision
-	 * @return the s v n revision, or <code>null</code> if a s v n revision with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public SVNRevision fetchByPrimaryKey(long svnRevisionId)
-		throws SystemException {
 		SVNRevision svnRevision = (SVNRevision)EntityCacheUtil.getResult(SVNRevisionModelImpl.ENTITY_CACHE_ENABLED,
-				SVNRevisionImpl.class, svnRevisionId);
+				SVNRevisionImpl.class, primaryKey);
 
 		if (svnRevision == _nullSVNRevision) {
 			return null;
@@ -2028,19 +2076,19 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 				session = openSession();
 
 				svnRevision = (SVNRevision)session.get(SVNRevisionImpl.class,
-						Long.valueOf(svnRevisionId));
+						primaryKey);
 
 				if (svnRevision != null) {
 					cacheResult(svnRevision);
 				}
 				else {
 					EntityCacheUtil.putResult(SVNRevisionModelImpl.ENTITY_CACHE_ENABLED,
-						SVNRevisionImpl.class, svnRevisionId, _nullSVNRevision);
+						SVNRevisionImpl.class, primaryKey, _nullSVNRevision);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(SVNRevisionModelImpl.ENTITY_CACHE_ENABLED,
-					SVNRevisionImpl.class, svnRevisionId);
+					SVNRevisionImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -2053,11 +2101,25 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	}
 
 	/**
+	 * Returns the s v n revision with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param svnRevisionId the primary key of the s v n revision
+	 * @return the s v n revision, or <code>null</code> if a s v n revision with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public SVNRevision fetchByPrimaryKey(long svnRevisionId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)svnRevisionId);
+	}
+
+	/**
 	 * Returns all the s v n revisions.
 	 *
 	 * @return the s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -2074,6 +2136,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the range of s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -2092,6 +2155,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the ordered range of s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<SVNRevision> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -2177,6 +2241,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (SVNRevision svnRevision : findAll()) {
 			remove(svnRevision);
@@ -2189,6 +2254,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 	 * @return the number of s v n revisions
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -2234,7 +2300,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<SVNRevision>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -2275,6 +2341,7 @@ public class SVNRevisionPersistenceImpl extends BasePersistenceImpl<SVNRevision>
 		};
 
 	private static CacheModel<SVNRevision> _nullSVNRevisionCacheModel = new CacheModel<SVNRevision>() {
+			@Override
 			public SVNRevision toEntityModel() {
 				return _nullSVNRevision;
 			}

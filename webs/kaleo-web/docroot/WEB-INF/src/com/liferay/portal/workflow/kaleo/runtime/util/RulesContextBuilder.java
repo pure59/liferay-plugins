@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -69,8 +69,17 @@ public class RulesContextBuilder {
 
 			facts.add(new Fact<String>("taskName", kaleoTask.getName()));
 
-			facts.add(
-				new Fact<Long>("userId", kaleoTaskInstanceToken.getUserId()));
+			if (kaleoTaskInstanceToken.getCompletionUserId() != 0) {
+				facts.add(
+					new Fact<Long>(
+						"userId",
+						kaleoTaskInstanceToken.getCompletionUserId()));
+			}
+			else {
+				facts.add(
+					new Fact<Long>(
+						"userId", kaleoTaskInstanceToken.getUserId()));
+			}
 
 			List<WorkflowTaskAssignee> workflowTaskAssignees =
 				KaleoTaskAssignmentInstanceUtil.getWorkflowTaskAssignees(

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,7 +19,6 @@ import com.liferay.mail.model.Folder;
 import com.liferay.mail.model.impl.FolderImpl;
 import com.liferay.mail.model.impl.FolderModelImpl;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -113,6 +112,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the matching folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findByAccountId(long accountId)
 		throws SystemException {
 		return findByAccountId(accountId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -132,6 +132,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the range of matching folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findByAccountId(long accountId, int start, int end)
 		throws SystemException {
 		return findByAccountId(accountId, start, end, null);
@@ -151,6 +152,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the ordered range of matching folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findByAccountId(long accountId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -257,6 +259,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder findByAccountId_First(long accountId,
 		OrderByComparator orderByComparator)
 		throws NoSuchFolderException, SystemException {
@@ -286,6 +289,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the first matching folder, or <code>null</code> if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder fetchByAccountId_First(long accountId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<Folder> list = findByAccountId(accountId, 0, 1, orderByComparator);
@@ -306,6 +310,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder findByAccountId_Last(long accountId,
 		OrderByComparator orderByComparator)
 		throws NoSuchFolderException, SystemException {
@@ -335,9 +340,14 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the last matching folder, or <code>null</code> if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder fetchByAccountId_Last(long accountId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByAccountId(accountId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<Folder> list = findByAccountId(accountId, count - 1, count,
 				orderByComparator);
@@ -359,6 +369,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a folder with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder[] findByAccountId_PrevAndNext(long folderId, long accountId,
 		OrderByComparator orderByComparator)
 		throws NoSuchFolderException, SystemException {
@@ -499,6 +510,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @param accountId the account ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByAccountId(long accountId) throws SystemException {
 		for (Folder folder : findByAccountId(accountId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
@@ -513,6 +525,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the number of matching folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByAccountId(long accountId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_ACCOUNTID;
 
@@ -579,6 +592,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder findByA_F(long accountId, String fullName)
 		throws NoSuchFolderException, SystemException {
 		Folder folder = fetchByA_F(accountId, fullName);
@@ -614,6 +628,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the matching folder, or <code>null</code> if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder fetchByA_F(long accountId, String fullName)
 		throws SystemException {
 		return fetchByA_F(accountId, fullName, true);
@@ -628,6 +643,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the matching folder, or <code>null</code> if a matching folder could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder fetchByA_F(long accountId, String fullName,
 		boolean retrieveFromCache) throws SystemException {
 		Object[] finderArgs = new Object[] { accountId, fullName };
@@ -655,16 +671,18 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 
 			query.append(_FINDER_COLUMN_A_F_ACCOUNTID_2);
 
+			boolean bindFullName = false;
+
 			if (fullName == null) {
 				query.append(_FINDER_COLUMN_A_F_FULLNAME_1);
 			}
+			else if (fullName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_A_F_FULLNAME_3);
+			}
 			else {
-				if (fullName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_A_F_FULLNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_A_F_FULLNAME_2);
-				}
+				bindFullName = true;
+
+				query.append(_FINDER_COLUMN_A_F_FULLNAME_2);
 			}
 
 			String sql = query.toString();
@@ -680,7 +698,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 
 				qPos.add(accountId);
 
-				if (fullName != null) {
+				if (bindFullName) {
 					qPos.add(fullName);
 				}
 
@@ -739,6 +757,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the folder that was removed
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder removeByA_F(long accountId, String fullName)
 		throws NoSuchFolderException, SystemException {
 		Folder folder = findByA_F(accountId, fullName);
@@ -754,6 +773,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the number of matching folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByA_F(long accountId, String fullName)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_A_F;
@@ -770,16 +790,18 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 
 			query.append(_FINDER_COLUMN_A_F_ACCOUNTID_2);
 
+			boolean bindFullName = false;
+
 			if (fullName == null) {
 				query.append(_FINDER_COLUMN_A_F_FULLNAME_1);
 			}
+			else if (fullName.equals(StringPool.BLANK)) {
+				query.append(_FINDER_COLUMN_A_F_FULLNAME_3);
+			}
 			else {
-				if (fullName.equals(StringPool.BLANK)) {
-					query.append(_FINDER_COLUMN_A_F_FULLNAME_3);
-				}
-				else {
-					query.append(_FINDER_COLUMN_A_F_FULLNAME_2);
-				}
+				bindFullName = true;
+
+				query.append(_FINDER_COLUMN_A_F_FULLNAME_2);
 			}
 
 			String sql = query.toString();
@@ -795,7 +817,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 
 				qPos.add(accountId);
 
-				if (fullName != null) {
+				if (bindFullName) {
 					qPos.add(fullName);
 				}
 
@@ -819,23 +841,24 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	private static final String _FINDER_COLUMN_A_F_ACCOUNTID_2 = "folder.accountId = ? AND ";
 	private static final String _FINDER_COLUMN_A_F_FULLNAME_1 = "folder.fullName IS NULL";
 	private static final String _FINDER_COLUMN_A_F_FULLNAME_2 = "folder.fullName = ?";
-	private static final String _FINDER_COLUMN_A_F_FULLNAME_3 = "(folder.fullName IS NULL OR folder.fullName = ?)";
+	private static final String _FINDER_COLUMN_A_F_FULLNAME_3 = "(folder.fullName IS NULL OR folder.fullName = '')";
+
+	public FolderPersistenceImpl() {
+		setModelClass(Folder.class);
+	}
 
 	/**
 	 * Caches the folder in the entity cache if it is enabled.
 	 *
 	 * @param folder the folder
 	 */
+	@Override
 	public void cacheResult(Folder folder) {
 		EntityCacheUtil.putResult(FolderModelImpl.ENTITY_CACHE_ENABLED,
 			FolderImpl.class, folder.getPrimaryKey(), folder);
 
 		FinderCacheUtil.putResult(FINDER_PATH_FETCH_BY_A_F,
-			new Object[] {
-				Long.valueOf(folder.getAccountId()),
-				
-			folder.getFullName()
-			}, folder);
+			new Object[] { folder.getAccountId(), folder.getFullName() }, folder);
 
 		folder.resetOriginalValues();
 	}
@@ -845,6 +868,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 *
 	 * @param folders the folders
 	 */
+	@Override
 	public void cacheResult(List<Folder> folders) {
 		for (Folder folder : folders) {
 			if (EntityCacheUtil.getResult(
@@ -912,9 +936,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	protected void cacheUniqueFindersCache(Folder folder) {
 		if (folder.isNew()) {
 			Object[] args = new Object[] {
-					Long.valueOf(folder.getAccountId()),
-					
-					folder.getFullName()
+					folder.getAccountId(), folder.getFullName()
 				};
 
 			FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_A_F, args,
@@ -927,9 +949,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 			if ((folderModelImpl.getColumnBitmask() &
 					FINDER_PATH_FETCH_BY_A_F.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(folder.getAccountId()),
-						
-						folder.getFullName()
+						folder.getAccountId(), folder.getFullName()
 					};
 
 				FinderCacheUtil.putResult(FINDER_PATH_COUNT_BY_A_F, args,
@@ -942,11 +962,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	protected void clearUniqueFindersCache(Folder folder) {
 		FolderModelImpl folderModelImpl = (FolderModelImpl)folder;
 
-		Object[] args = new Object[] {
-				Long.valueOf(folder.getAccountId()),
-				
-				folder.getFullName()
-			};
+		Object[] args = new Object[] { folder.getAccountId(), folder.getFullName() };
 
 		FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_A_F, args);
 		FinderCacheUtil.removeResult(FINDER_PATH_FETCH_BY_A_F, args);
@@ -954,8 +970,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 		if ((folderModelImpl.getColumnBitmask() &
 				FINDER_PATH_FETCH_BY_A_F.getColumnBitmask()) != 0) {
 			args = new Object[] {
-					Long.valueOf(folderModelImpl.getOriginalAccountId()),
-					
+					folderModelImpl.getOriginalAccountId(),
 					folderModelImpl.getOriginalFullName()
 				};
 
@@ -970,6 +985,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @param folderId the primary key for the new folder
 	 * @return the new folder
 	 */
+	@Override
 	public Folder create(long folderId) {
 		Folder folder = new FolderImpl();
 
@@ -987,9 +1003,10 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a folder with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder remove(long folderId)
 		throws NoSuchFolderException, SystemException {
-		return remove(Long.valueOf(folderId));
+		return remove((Serializable)folderId);
 	}
 
 	/**
@@ -1104,7 +1121,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 			if ((folderModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ACCOUNTID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(folderModelImpl.getOriginalAccountId())
+						folderModelImpl.getOriginalAccountId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ACCOUNTID,
@@ -1112,7 +1129,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_ACCOUNTID,
 					args);
 
-				args = new Object[] { Long.valueOf(folderModelImpl.getAccountId()) };
+				args = new Object[] { folderModelImpl.getAccountId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_ACCOUNTID,
 					args);
@@ -1159,13 +1176,24 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 *
 	 * @param primaryKey the primary key of the folder
 	 * @return the folder
-	 * @throws com.liferay.portal.NoSuchModelException if a folder with the primary key could not be found
+	 * @throws com.liferay.mail.NoSuchFolderException if a folder with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public Folder findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchFolderException, SystemException {
+		Folder folder = fetchByPrimaryKey(primaryKey);
+
+		if (folder == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchFolderException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return folder;
 	}
 
 	/**
@@ -1176,20 +1204,10 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @throws com.liferay.mail.NoSuchFolderException if a folder with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public Folder findByPrimaryKey(long folderId)
 		throws NoSuchFolderException, SystemException {
-		Folder folder = fetchByPrimaryKey(folderId);
-
-		if (folder == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + folderId);
-			}
-
-			throw new NoSuchFolderException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				folderId);
-		}
-
-		return folder;
+		return findByPrimaryKey((Serializable)folderId);
 	}
 
 	/**
@@ -1202,19 +1220,8 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	@Override
 	public Folder fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the folder with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param folderId the primary key of the folder
-	 * @return the folder, or <code>null</code> if a folder with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public Folder fetchByPrimaryKey(long folderId) throws SystemException {
 		Folder folder = (Folder)EntityCacheUtil.getResult(FolderModelImpl.ENTITY_CACHE_ENABLED,
-				FolderImpl.class, folderId);
+				FolderImpl.class, primaryKey);
 
 		if (folder == _nullFolder) {
 			return null;
@@ -1226,20 +1233,19 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 			try {
 				session = openSession();
 
-				folder = (Folder)session.get(FolderImpl.class,
-						Long.valueOf(folderId));
+				folder = (Folder)session.get(FolderImpl.class, primaryKey);
 
 				if (folder != null) {
 					cacheResult(folder);
 				}
 				else {
 					EntityCacheUtil.putResult(FolderModelImpl.ENTITY_CACHE_ENABLED,
-						FolderImpl.class, folderId, _nullFolder);
+						FolderImpl.class, primaryKey, _nullFolder);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(FolderModelImpl.ENTITY_CACHE_ENABLED,
-					FolderImpl.class, folderId);
+					FolderImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -1252,11 +1258,24 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	}
 
 	/**
+	 * Returns the folder with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param folderId the primary key of the folder
+	 * @return the folder, or <code>null</code> if a folder with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public Folder fetchByPrimaryKey(long folderId) throws SystemException {
+		return fetchByPrimaryKey((Serializable)folderId);
+	}
+
+	/**
 	 * Returns all the folders.
 	 *
 	 * @return the folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -1273,6 +1292,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the range of folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findAll(int start, int end) throws SystemException {
 		return findAll(start, end, null);
 	}
@@ -1290,6 +1310,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the ordered range of folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<Folder> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1375,6 +1396,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (Folder folder : findAll()) {
 			remove(folder);
@@ -1387,6 +1409,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 	 * @return the number of folders
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1432,7 +1455,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<Folder>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1473,6 +1496,7 @@ public class FolderPersistenceImpl extends BasePersistenceImpl<Folder>
 		};
 
 	private static CacheModel<Folder> _nullFolderCacheModel = new CacheModel<Folder>() {
+			@Override
 			public Folder toEntityModel() {
 				return _nullFolder;
 			}

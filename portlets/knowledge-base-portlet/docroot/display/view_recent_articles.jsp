@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -33,10 +33,10 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 	orderByCol="<%= orderByCol %>"
 	orderByComparator="<%= KnowledgeBaseUtil.getKBArticleOrderByComparator(orderByCol, orderByType) %>"
 	orderByType="<%= orderByType %>"
+	total="<%= KBArticleServiceUtil.getGroupKBArticlesCount(scopeGroupId, WorkflowConstants.STATUS_APPROVED) %>"
 >
 	<liferay-ui:search-container-results
 		results="<%= KBArticleServiceUtil.getGroupKBArticles(scopeGroupId, WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd(), searchContainer.getOrderByComparator()) %>"
-		total="<%= KBArticleServiceUtil.getGroupKBArticlesCount(scopeGroupId, WorkflowConstants.STATUS_APPROVED) %>"
 	/>
 
 	<liferay-ui:search-container-row
@@ -66,22 +66,22 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 		</c:if>
 
 		<c:if test="<%= showKBArticleCreateDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="create-date"
 				orderable="<%= true %>"
-				value='<%= dateFormatDate.format(kbArticle.getCreateDate()) + "<br />" + dateFormatTime.format(kbArticle.getCreateDate()) %>'
+				value="<%= kbArticle.getCreateDate() %>"
 			/>
 		</c:if>
 
 		<c:if test="<%= showKBArticleModifiedDateColumn %>">
-			<liferay-ui:search-container-column-text
+			<liferay-ui:search-container-column-date
 				cssClass="kb-column-no-wrap"
 				href="<%= rowURL %>"
 				name="modified-date"
 				orderable="<%= true %>"
-				value='<%= dateFormatDate.format(kbArticle.getModifiedDate()) + "<br />" + dateFormatTime.format(kbArticle.getModifiedDate()) %>'
+				value="<%= kbArticle.getModifiedDate() %>"
 			/>
 		</c:if>
 
@@ -91,7 +91,7 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 				href="<%= rowURL %>"
 				name="status"
 				orderable="<%= true %>"
-				value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.toLabel(kbArticle.getStatus())) + ")" %>'
+				value='<%= kbArticle.getStatus() + " (" + LanguageUtil.get(pageContext, WorkflowConstants.getStatusLabel(kbArticle.getStatus())) + ")" %>'
 			/>
 		</c:if>
 
@@ -111,8 +111,6 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 			path="/display/article_action.jsp"
 		/>
 	</liferay-ui:search-container-row>
-
-	<liferay-util:include page="/display/display_tools.jsp" servletContext="<%= application %>" />
 
 	<aui:button-row cssClass="float-container">
 		<c:if test="<%= DisplayPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADD_KB_ARTICLE) && DisplayPermission.contains(permissionChecker, scopeGroupId, ActionKeys.ADMINISTRATOR) %>">
@@ -134,6 +132,8 @@ String orderByType = ParamUtil.getString(request, "orderByType", "desc");
 
 			<aui:button href="<%= permissionsURL %>" value="permissions" />
 		</c:if>
+
+		<liferay-util:include page="/display/display_tools.jsp" servletContext="<%= application %>" />
 	</aui:button-row>
 
 	<liferay-ui:search-iterator />

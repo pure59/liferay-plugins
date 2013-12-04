@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,6 @@
 
 package com.liferay.portal.workflow.kaleo.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -117,6 +116,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByCompanyId(long companyId)
 		throws SystemException {
 		return findByCompanyId(companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
@@ -136,6 +136,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByCompanyId(long companyId, int start,
 		int end) throws SystemException {
 		return findByCompanyId(companyId, start, end, null);
@@ -155,6 +156,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByCompanyId(long companyId, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -261,6 +263,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -291,6 +294,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the first matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByCompanyId_First(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		List<KaleoInstanceToken> list = findByCompanyId(companyId, 0, 1,
@@ -312,6 +316,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -342,9 +347,14 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the last matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByCompanyId_Last(long companyId,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByCompanyId(companyId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoInstanceToken> list = findByCompanyId(companyId, count - 1,
 				count, orderByComparator);
@@ -366,6 +376,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken[] findByCompanyId_PrevAndNext(
 		long kaleoInstanceTokenId, long companyId,
 		OrderByComparator orderByComparator)
@@ -508,6 +519,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param companyId the company ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByCompanyId(long companyId) throws SystemException {
 		for (KaleoInstanceToken kaleoInstanceToken : findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
@@ -522,6 +534,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByCompanyId(long companyId) throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_COMPANYID;
 
@@ -598,6 +611,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoDefinitionId(
 		long kaleoDefinitionId) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, QueryUtil.ALL_POS,
@@ -617,6 +631,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end) throws SystemException {
 		return findByKaleoDefinitionId(kaleoDefinitionId, start, end, null);
@@ -636,6 +651,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoDefinitionId(
 		long kaleoDefinitionId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -747,6 +763,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByKaleoDefinitionId_First(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -777,6 +794,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the first matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByKaleoDefinitionId_First(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -799,6 +817,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByKaleoDefinitionId_Last(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -829,10 +848,15 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the last matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByKaleoDefinitionId_Last(
 		long kaleoDefinitionId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByKaleoDefinitionId(kaleoDefinitionId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoInstanceToken> list = findByKaleoDefinitionId(kaleoDefinitionId,
 				count - 1, count, orderByComparator);
@@ -854,6 +878,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken[] findByKaleoDefinitionId_PrevAndNext(
 		long kaleoInstanceTokenId, long kaleoDefinitionId,
 		OrderByComparator orderByComparator)
@@ -999,6 +1024,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param kaleoDefinitionId the kaleo definition ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		for (KaleoInstanceToken kaleoInstanceToken : findByKaleoDefinitionId(
@@ -1014,6 +1040,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoDefinitionId(long kaleoDefinitionId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEODEFINITIONID;
@@ -1092,6 +1119,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, QueryUtil.ALL_POS,
@@ -1111,6 +1139,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoInstanceId(
 		long kaleoInstanceId, int start, int end) throws SystemException {
 		return findByKaleoInstanceId(kaleoInstanceId, start, end, null);
@@ -1130,6 +1159,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByKaleoInstanceId(
 		long kaleoInstanceId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1241,6 +1271,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByKaleoInstanceId_First(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -1271,6 +1302,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the first matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByKaleoInstanceId_First(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1293,6 +1325,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByKaleoInstanceId_Last(long kaleoInstanceId,
 		OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -1323,10 +1356,15 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the last matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByKaleoInstanceId_Last(
 		long kaleoInstanceId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByKaleoInstanceId(kaleoInstanceId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoInstanceToken> list = findByKaleoInstanceId(kaleoInstanceId,
 				count - 1, count, orderByComparator);
@@ -1348,6 +1386,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken[] findByKaleoInstanceId_PrevAndNext(
 		long kaleoInstanceTokenId, long kaleoInstanceId,
 		OrderByComparator orderByComparator)
@@ -1492,6 +1531,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param kaleoInstanceId the kaleo instance ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		for (KaleoInstanceToken kaleoInstanceToken : findByKaleoInstanceId(
@@ -1507,6 +1547,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByKaleoInstanceId(long kaleoInstanceId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_KALEOINSTANCEID;
@@ -1586,6 +1627,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI(long companyId,
 		long parentKaleoInstanceTokenId) throws SystemException {
 		return findByC_PKITI(companyId, parentKaleoInstanceTokenId,
@@ -1606,6 +1648,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI(long companyId,
 		long parentKaleoInstanceTokenId, int start, int end)
 		throws SystemException {
@@ -1628,6 +1671,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI(long companyId,
 		long parentKaleoInstanceTokenId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -1745,6 +1789,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByC_PKITI_First(long companyId,
 		long parentKaleoInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -1779,6 +1824,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the first matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByC_PKITI_First(long companyId,
 		long parentKaleoInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -1802,6 +1848,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByC_PKITI_Last(long companyId,
 		long parentKaleoInstanceTokenId, OrderByComparator orderByComparator)
 		throws NoSuchInstanceTokenException, SystemException {
@@ -1836,10 +1883,15 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the last matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByC_PKITI_Last(long companyId,
 		long parentKaleoInstanceTokenId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByC_PKITI(companyId, parentKaleoInstanceTokenId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoInstanceToken> list = findByC_PKITI(companyId,
 				parentKaleoInstanceTokenId, count - 1, count, orderByComparator);
@@ -1862,6 +1914,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken[] findByC_PKITI_PrevAndNext(
 		long kaleoInstanceTokenId, long companyId,
 		long parentKaleoInstanceTokenId, OrderByComparator orderByComparator)
@@ -2012,6 +2065,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param parentKaleoInstanceTokenId the parent kaleo instance token ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_PKITI(long companyId, long parentKaleoInstanceTokenId)
 		throws SystemException {
 		for (KaleoInstanceToken kaleoInstanceToken : findByC_PKITI(companyId,
@@ -2029,6 +2083,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_PKITI(long companyId, long parentKaleoInstanceTokenId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_C_PKITI;
@@ -2120,6 +2175,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI_CD(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate)
 		throws SystemException {
@@ -2142,6 +2198,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI_CD(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate, int start, int end)
 		throws SystemException {
@@ -2165,6 +2222,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findByC_PKITI_CD(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate, int start,
 		int end, OrderByComparator orderByComparator) throws SystemException {
@@ -2222,10 +2280,14 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 			query.append(_FINDER_COLUMN_C_PKITI_CD_PARENTKALEOINSTANCETOKENID_2);
 
+			boolean bindCompletionDate = false;
+
 			if (completionDate == null) {
 				query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_1);
 			}
 			else {
+				bindCompletionDate = true;
+
 				query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_2);
 			}
 
@@ -2253,7 +2315,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 				qPos.add(parentKaleoInstanceTokenId);
 
-				if (completionDate != null) {
+				if (bindCompletionDate) {
 					qPos.add(CalendarUtil.getTimestamp(completionDate));
 				}
 
@@ -2298,6 +2360,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByC_PKITI_CD_First(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate,
 		OrderByComparator orderByComparator)
@@ -2337,6 +2400,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the first matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByC_PKITI_CD_First(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -2362,6 +2426,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByC_PKITI_CD_Last(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate,
 		OrderByComparator orderByComparator)
@@ -2401,11 +2466,16 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the last matching kaleo instance token, or <code>null</code> if a matching kaleo instance token could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken fetchByC_PKITI_CD_Last(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate,
 		OrderByComparator orderByComparator) throws SystemException {
 		int count = countByC_PKITI_CD(companyId, parentKaleoInstanceTokenId,
 				completionDate);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<KaleoInstanceToken> list = findByC_PKITI_CD(companyId,
 				parentKaleoInstanceTokenId, completionDate, count - 1, count,
@@ -2430,6 +2500,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken[] findByC_PKITI_CD_PrevAndNext(
 		long kaleoInstanceTokenId, long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate,
@@ -2484,10 +2555,14 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 		query.append(_FINDER_COLUMN_C_PKITI_CD_PARENTKALEOINSTANCETOKENID_2);
 
+		boolean bindCompletionDate = false;
+
 		if (completionDate == null) {
 			query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_1);
 		}
 		else {
+			bindCompletionDate = true;
+
 			query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_2);
 		}
 
@@ -2563,7 +2638,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 		qPos.add(parentKaleoInstanceTokenId);
 
-		if (completionDate != null) {
+		if (bindCompletionDate) {
 			qPos.add(CalendarUtil.getTimestamp(completionDate));
 		}
 
@@ -2593,6 +2668,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param completionDate the completion date
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByC_PKITI_CD(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate)
 		throws SystemException {
@@ -2612,6 +2688,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of matching kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByC_PKITI_CD(long companyId,
 		long parentKaleoInstanceTokenId, Date completionDate)
 		throws SystemException {
@@ -2633,10 +2710,14 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 			query.append(_FINDER_COLUMN_C_PKITI_CD_PARENTKALEOINSTANCETOKENID_2);
 
+			boolean bindCompletionDate = false;
+
 			if (completionDate == null) {
 				query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_1);
 			}
 			else {
+				bindCompletionDate = true;
+
 				query.append(_FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_2);
 			}
 
@@ -2655,7 +2736,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 				qPos.add(parentKaleoInstanceTokenId);
 
-				if (completionDate != null) {
+				if (bindCompletionDate) {
 					qPos.add(CalendarUtil.getTimestamp(completionDate));
 				}
 
@@ -2682,11 +2763,16 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	private static final String _FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_1 = "kaleoInstanceToken.completionDate IS NULL";
 	private static final String _FINDER_COLUMN_C_PKITI_CD_COMPLETIONDATE_2 = "kaleoInstanceToken.completionDate = ?";
 
+	public KaleoInstanceTokenPersistenceImpl() {
+		setModelClass(KaleoInstanceToken.class);
+	}
+
 	/**
 	 * Caches the kaleo instance token in the entity cache if it is enabled.
 	 *
 	 * @param kaleoInstanceToken the kaleo instance token
 	 */
+	@Override
 	public void cacheResult(KaleoInstanceToken kaleoInstanceToken) {
 		EntityCacheUtil.putResult(KaleoInstanceTokenModelImpl.ENTITY_CACHE_ENABLED,
 			KaleoInstanceTokenImpl.class, kaleoInstanceToken.getPrimaryKey(),
@@ -2700,6 +2786,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 *
 	 * @param kaleoInstanceTokens the kaleo instance tokens
 	 */
+	@Override
 	public void cacheResult(List<KaleoInstanceToken> kaleoInstanceTokens) {
 		for (KaleoInstanceToken kaleoInstanceToken : kaleoInstanceTokens) {
 			if (EntityCacheUtil.getResult(
@@ -2767,6 +2854,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @param kaleoInstanceTokenId the primary key for the new kaleo instance token
 	 * @return the new kaleo instance token
 	 */
+	@Override
 	public KaleoInstanceToken create(long kaleoInstanceTokenId) {
 		KaleoInstanceToken kaleoInstanceToken = new KaleoInstanceTokenImpl();
 
@@ -2784,9 +2872,10 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken remove(long kaleoInstanceTokenId)
 		throws NoSuchInstanceTokenException, SystemException {
-		return remove(Long.valueOf(kaleoInstanceTokenId));
+		return remove((Serializable)kaleoInstanceTokenId);
 	}
 
 	/**
@@ -2904,7 +2993,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 			if ((kaleoInstanceTokenModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalCompanyId())
+						kaleoInstanceTokenModelImpl.getOriginalCompanyId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
@@ -2912,9 +3001,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 				FinderCacheUtil.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_COMPANYID,
 					args);
 
-				args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getCompanyId())
-					};
+				args = new Object[] { kaleoInstanceTokenModelImpl.getCompanyId() };
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_COMPANYID,
 					args);
@@ -2925,7 +3012,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 			if ((kaleoInstanceTokenModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEODEFINITIONID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalKaleoDefinitionId())
+						kaleoInstanceTokenModelImpl.getOriginalKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2934,7 +3021,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getKaleoDefinitionId())
+						kaleoInstanceTokenModelImpl.getKaleoDefinitionId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEODEFINITIONID,
@@ -2946,7 +3033,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 			if ((kaleoInstanceTokenModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_KALEOINSTANCEID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalKaleoInstanceId())
+						kaleoInstanceTokenModelImpl.getOriginalKaleoInstanceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOINSTANCEID,
@@ -2955,7 +3042,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getKaleoInstanceId())
+						kaleoInstanceTokenModelImpl.getKaleoInstanceId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_KALEOINSTANCEID,
@@ -2967,8 +3054,8 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 			if ((kaleoInstanceTokenModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_PKITI.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalCompanyId()),
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalParentKaleoInstanceTokenId())
+						kaleoInstanceTokenModelImpl.getOriginalCompanyId(),
+						kaleoInstanceTokenModelImpl.getOriginalParentKaleoInstanceTokenId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_PKITI, args);
@@ -2976,8 +3063,8 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getCompanyId()),
-						Long.valueOf(kaleoInstanceTokenModelImpl.getParentKaleoInstanceTokenId())
+						kaleoInstanceTokenModelImpl.getCompanyId(),
+						kaleoInstanceTokenModelImpl.getParentKaleoInstanceTokenId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_C_PKITI, args);
@@ -2988,9 +3075,8 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 			if ((kaleoInstanceTokenModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_C_PKITI_CD.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalCompanyId()),
-						Long.valueOf(kaleoInstanceTokenModelImpl.getOriginalParentKaleoInstanceTokenId()),
-						
+						kaleoInstanceTokenModelImpl.getOriginalCompanyId(),
+						kaleoInstanceTokenModelImpl.getOriginalParentKaleoInstanceTokenId(),
 						kaleoInstanceTokenModelImpl.getOriginalCompletionDate()
 					};
 
@@ -3000,9 +3086,8 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 					args);
 
 				args = new Object[] {
-						Long.valueOf(kaleoInstanceTokenModelImpl.getCompanyId()),
-						Long.valueOf(kaleoInstanceTokenModelImpl.getParentKaleoInstanceTokenId()),
-						
+						kaleoInstanceTokenModelImpl.getCompanyId(),
+						kaleoInstanceTokenModelImpl.getParentKaleoInstanceTokenId(),
 						kaleoInstanceTokenModelImpl.getCompletionDate()
 					};
 
@@ -3056,13 +3141,24 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 *
 	 * @param primaryKey the primary key of the kaleo instance token
 	 * @return the kaleo instance token
-	 * @throws com.liferay.portal.NoSuchModelException if a kaleo instance token with the primary key could not be found
+	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public KaleoInstanceToken findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchInstanceTokenException, SystemException {
+		KaleoInstanceToken kaleoInstanceToken = fetchByPrimaryKey(primaryKey);
+
+		if (kaleoInstanceToken == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchInstanceTokenException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return kaleoInstanceToken;
 	}
 
 	/**
@@ -3073,21 +3169,10 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @throws com.liferay.portal.workflow.kaleo.NoSuchInstanceTokenException if a kaleo instance token with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public KaleoInstanceToken findByPrimaryKey(long kaleoInstanceTokenId)
 		throws NoSuchInstanceTokenException, SystemException {
-		KaleoInstanceToken kaleoInstanceToken = fetchByPrimaryKey(kaleoInstanceTokenId);
-
-		if (kaleoInstanceToken == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-					kaleoInstanceTokenId);
-			}
-
-			throw new NoSuchInstanceTokenException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				kaleoInstanceTokenId);
-		}
-
-		return kaleoInstanceToken;
+		return findByPrimaryKey((Serializable)kaleoInstanceTokenId);
 	}
 
 	/**
@@ -3100,20 +3185,8 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	@Override
 	public KaleoInstanceToken fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the kaleo instance token with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param kaleoInstanceTokenId the primary key of the kaleo instance token
-	 * @return the kaleo instance token, or <code>null</code> if a kaleo instance token with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public KaleoInstanceToken fetchByPrimaryKey(long kaleoInstanceTokenId)
-		throws SystemException {
 		KaleoInstanceToken kaleoInstanceToken = (KaleoInstanceToken)EntityCacheUtil.getResult(KaleoInstanceTokenModelImpl.ENTITY_CACHE_ENABLED,
-				KaleoInstanceTokenImpl.class, kaleoInstanceTokenId);
+				KaleoInstanceTokenImpl.class, primaryKey);
 
 		if (kaleoInstanceToken == _nullKaleoInstanceToken) {
 			return null;
@@ -3126,20 +3199,20 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 				session = openSession();
 
 				kaleoInstanceToken = (KaleoInstanceToken)session.get(KaleoInstanceTokenImpl.class,
-						Long.valueOf(kaleoInstanceTokenId));
+						primaryKey);
 
 				if (kaleoInstanceToken != null) {
 					cacheResult(kaleoInstanceToken);
 				}
 				else {
 					EntityCacheUtil.putResult(KaleoInstanceTokenModelImpl.ENTITY_CACHE_ENABLED,
-						KaleoInstanceTokenImpl.class, kaleoInstanceTokenId,
+						KaleoInstanceTokenImpl.class, primaryKey,
 						_nullKaleoInstanceToken);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(KaleoInstanceTokenModelImpl.ENTITY_CACHE_ENABLED,
-					KaleoInstanceTokenImpl.class, kaleoInstanceTokenId);
+					KaleoInstanceTokenImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -3152,11 +3225,25 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	}
 
 	/**
+	 * Returns the kaleo instance token with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param kaleoInstanceTokenId the primary key of the kaleo instance token
+	 * @return the kaleo instance token, or <code>null</code> if a kaleo instance token with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public KaleoInstanceToken fetchByPrimaryKey(long kaleoInstanceTokenId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)kaleoInstanceTokenId);
+	}
+
+	/**
 	 * Returns all the kaleo instance tokens.
 	 *
 	 * @return the kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -3173,6 +3260,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the range of kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -3191,6 +3279,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the ordered range of kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<KaleoInstanceToken> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -3276,6 +3365,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (KaleoInstanceToken kaleoInstanceToken : findAll()) {
 			remove(kaleoInstanceToken);
@@ -3288,6 +3378,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 	 * @return the number of kaleo instance tokens
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -3333,7 +3424,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<KaleoInstanceToken>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -3375,6 +3466,7 @@ public class KaleoInstanceTokenPersistenceImpl extends BasePersistenceImpl<Kaleo
 
 	private static CacheModel<KaleoInstanceToken> _nullKaleoInstanceTokenCacheModel =
 		new CacheModel<KaleoInstanceToken>() {
+			@Override
 			public KaleoInstanceToken toEntityModel() {
 				return _nullKaleoInstanceToken;
 			}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 /**
  * @author Brian Wing Shun Chan
+ * @generated
  */
 public class AkismetDataLocalServiceClpInvoker {
 	public AkismetDataLocalServiceClpInvoker() {
@@ -72,58 +73,65 @@ public class AkismetDataLocalServiceClpInvoker {
 				"com.liferay.portal.kernel.dao.orm.DynamicQuery"
 			};
 
-		_methodName9 = "fetchAkismetData";
+		_methodName9 = "dynamicQueryCount";
 
-		_methodParameterTypes9 = new String[] { "long" };
+		_methodParameterTypes9 = new String[] {
+				"com.liferay.portal.kernel.dao.orm.DynamicQuery",
+				"com.liferay.portal.kernel.dao.orm.Projection"
+			};
 
-		_methodName10 = "getAkismetData";
+		_methodName10 = "fetchAkismetData";
 
 		_methodParameterTypes10 = new String[] { "long" };
 
-		_methodName11 = "getPersistedModel";
+		_methodName11 = "getAkismetData";
 
-		_methodParameterTypes11 = new String[] { "java.io.Serializable" };
+		_methodParameterTypes11 = new String[] { "long" };
 
-		_methodName12 = "getAkismetDatas";
+		_methodName12 = "getPersistedModel";
 
-		_methodParameterTypes12 = new String[] { "int", "int" };
+		_methodParameterTypes12 = new String[] { "java.io.Serializable" };
 
-		_methodName13 = "getAkismetDatasCount";
+		_methodName13 = "getAkismetDatas";
 
-		_methodParameterTypes13 = new String[] {  };
+		_methodParameterTypes13 = new String[] { "int", "int" };
 
-		_methodName14 = "updateAkismetData";
+		_methodName14 = "getAkismetDatasCount";
 
-		_methodParameterTypes14 = new String[] {
+		_methodParameterTypes14 = new String[] {  };
+
+		_methodName15 = "updateAkismetData";
+
+		_methodParameterTypes15 = new String[] {
 				"com.liferay.akismet.model.AkismetData"
 			};
 
-		_methodName31 = "getBeanIdentifier";
+		_methodName32 = "getBeanIdentifier";
 
-		_methodParameterTypes31 = new String[] {  };
+		_methodParameterTypes32 = new String[] {  };
 
-		_methodName32 = "setBeanIdentifier";
+		_methodName33 = "setBeanIdentifier";
 
-		_methodParameterTypes32 = new String[] { "java.lang.String" };
+		_methodParameterTypes33 = new String[] { "java.lang.String" };
 
-		_methodName37 = "deleteAkismetData";
+		_methodName38 = "deleteAkismetData";
 
-		_methodParameterTypes37 = new String[] { "java.util.Date" };
+		_methodParameterTypes38 = new String[] { "java.util.Date" };
 
-		_methodName38 = "deleteMBMessageAkismetData";
+		_methodName39 = "deleteAkismetData";
 
-		_methodParameterTypes38 = new String[] { "long" };
+		_methodParameterTypes39 = new String[] { "java.lang.String", "long" };
 
-		_methodName39 = "fetchMBMessageAkismetData";
+		_methodName40 = "fetchAkismetData";
 
-		_methodParameterTypes39 = new String[] { "long" };
+		_methodParameterTypes40 = new String[] { "java.lang.String", "long" };
 
-		_methodName40 = "updateAkismetData";
+		_methodName41 = "updateAkismetData";
 
-		_methodParameterTypes40 = new String[] {
-				"long", "java.lang.String", "java.lang.String",
+		_methodParameterTypes41 = new String[] {
+				"java.lang.String", "long", "java.lang.String",
 				"java.lang.String", "java.lang.String", "java.lang.String",
-				"java.lang.String"
+				"java.lang.String", "java.lang.String"
 			};
 	}
 
@@ -181,72 +189,81 @@ public class AkismetDataLocalServiceClpInvoker {
 
 		if (_methodName9.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes9, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.fetchAkismetData(((Long)arguments[0]).longValue());
+			return AkismetDataLocalServiceUtil.dynamicQueryCount((com.liferay.portal.kernel.dao.orm.DynamicQuery)arguments[0],
+				(com.liferay.portal.kernel.dao.orm.Projection)arguments[1]);
 		}
 
 		if (_methodName10.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes10, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.getAkismetData(((Long)arguments[0]).longValue());
+			return AkismetDataLocalServiceUtil.fetchAkismetData(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName11.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes11, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
+			return AkismetDataLocalServiceUtil.getAkismetData(((Long)arguments[0]).longValue());
 		}
 
 		if (_methodName12.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes12, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.getAkismetDatas(((Integer)arguments[0]).intValue(),
-				((Integer)arguments[1]).intValue());
+			return AkismetDataLocalServiceUtil.getPersistedModel((java.io.Serializable)arguments[0]);
 		}
 
 		if (_methodName13.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes13, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.getAkismetDatasCount();
+			return AkismetDataLocalServiceUtil.getAkismetDatas(((Integer)arguments[0]).intValue(),
+				((Integer)arguments[1]).intValue());
 		}
 
 		if (_methodName14.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes14, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.updateAkismetData((com.liferay.akismet.model.AkismetData)arguments[0]);
+			return AkismetDataLocalServiceUtil.getAkismetDatasCount();
 		}
 
-		if (_methodName31.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes31, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.getBeanIdentifier();
+		if (_methodName15.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes15, parameterTypes)) {
+			return AkismetDataLocalServiceUtil.updateAkismetData((com.liferay.akismet.model.AkismetData)arguments[0]);
 		}
 
 		if (_methodName32.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes32, parameterTypes)) {
-			AkismetDataLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
-
-			return null;
+			return AkismetDataLocalServiceUtil.getBeanIdentifier();
 		}
 
-		if (_methodName37.equals(name) &&
-				Arrays.deepEquals(_methodParameterTypes37, parameterTypes)) {
-			AkismetDataLocalServiceUtil.deleteAkismetData((java.util.Date)arguments[0]);
+		if (_methodName33.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes33, parameterTypes)) {
+			AkismetDataLocalServiceUtil.setBeanIdentifier((java.lang.String)arguments[0]);
 
 			return null;
 		}
 
 		if (_methodName38.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes38, parameterTypes)) {
-			AkismetDataLocalServiceUtil.deleteMBMessageAkismetData(((Long)arguments[0]).longValue());
+			AkismetDataLocalServiceUtil.deleteAkismetData((java.util.Date)arguments[0]);
 
 			return null;
 		}
 
 		if (_methodName39.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes39, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.fetchMBMessageAkismetData(((Long)arguments[0]).longValue());
+			AkismetDataLocalServiceUtil.deleteAkismetData((java.lang.String)arguments[0],
+				((Long)arguments[1]).longValue());
+
+			return null;
 		}
 
 		if (_methodName40.equals(name) &&
 				Arrays.deepEquals(_methodParameterTypes40, parameterTypes)) {
-			return AkismetDataLocalServiceUtil.updateAkismetData(((Long)arguments[0]).longValue(),
-				(java.lang.String)arguments[1], (java.lang.String)arguments[2],
-				(java.lang.String)arguments[3], (java.lang.String)arguments[4],
-				(java.lang.String)arguments[5], (java.lang.String)arguments[6]);
+			return AkismetDataLocalServiceUtil.fetchAkismetData((java.lang.String)arguments[0],
+				((Long)arguments[1]).longValue());
+		}
+
+		if (_methodName41.equals(name) &&
+				Arrays.deepEquals(_methodParameterTypes41, parameterTypes)) {
+			return AkismetDataLocalServiceUtil.updateAkismetData((java.lang.String)arguments[0],
+				((Long)arguments[1]).longValue(),
+				(java.lang.String)arguments[2], (java.lang.String)arguments[3],
+				(java.lang.String)arguments[4], (java.lang.String)arguments[5],
+				(java.lang.String)arguments[6], (java.lang.String)arguments[7]);
 		}
 
 		throw new UnsupportedOperationException();
@@ -282,16 +299,18 @@ public class AkismetDataLocalServiceClpInvoker {
 	private String[] _methodParameterTypes13;
 	private String _methodName14;
 	private String[] _methodParameterTypes14;
-	private String _methodName31;
-	private String[] _methodParameterTypes31;
+	private String _methodName15;
+	private String[] _methodParameterTypes15;
 	private String _methodName32;
 	private String[] _methodParameterTypes32;
-	private String _methodName37;
-	private String[] _methodParameterTypes37;
+	private String _methodName33;
+	private String[] _methodParameterTypes33;
 	private String _methodName38;
 	private String[] _methodParameterTypes38;
 	private String _methodName39;
 	private String[] _methodParameterTypes39;
 	private String _methodName40;
 	private String[] _methodParameterTypes40;
+	private String _methodName41;
+	private String[] _methodParameterTypes41;
 }

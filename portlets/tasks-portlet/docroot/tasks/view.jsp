@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -54,7 +54,7 @@ portletURL.setParameter("tabs2", tabs2);
 	<div style="clear: both;"><!-- --></div>
 </div>
 
-<div class="filter-wrapper aui-helper-hidden">
+<div class="filter-wrapper hide">
 	<%@ include file="/tasks/view_tasks_filter.jspf" %>
 </div>
 
@@ -80,7 +80,8 @@ portletURL.setParameter("tabs2", tabs2);
 		function() {
 			Liferay.Tasks.init(
 				{
-					currentTab: '<%= tabs1 %>',
+					currentTab: '<%= HtmlUtil.escape(tabs1) %>',
+					namespace: '<portlet:namespace />',
 					taskListURL: '<portlet:renderURL windowState="<%= LiferayWindowState.EXCLUSIVE.toString() %>"><portlet:param name="mvcPath" value="/tasks/view_tasks.jsp" /></portlet:renderURL>'
 				}
 			);

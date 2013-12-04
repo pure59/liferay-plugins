@@ -150,7 +150,7 @@ input[type=button], input[type=reset], input[type=submit], #sign-in:hover, .aui-
 	border-width: 1px;
 }
 
-/* ---------- Login Screens ---------- */
+/* ---------- Login screens ---------- */
 
 #sign-in {
 	color: #34404F;
@@ -189,7 +189,7 @@ input[type=button], input[type=reset], input[type=submit], #sign-in:hover, .aui-
 				a {
 					display: block;
 					padding: 2px;
-					white-space: pre;
+					white-space: nowrap;
 
 					&:hover {
 						background-color: #FFF;
@@ -198,6 +198,11 @@ input[type=button], input[type=reset], input[type=submit], #sign-in:hover, .aui-
 				}
 			}
 		}
+	}
+
+	.portlet-login.portlet-boundary {
+		display: table;
+		margin: 0 auto;
 	}
 
 	.portlet, .portlet-login .navigation, .signed-in-as {
@@ -239,7 +244,7 @@ input[type=button], input[type=reset], input[type=submit], #sign-in:hover, .aui-
 	}
 }
 
-/* ---------- Internet Explorer ---------- */
+/* ---------- Internet explorer ---------- */
 
 .ie {
 	#loginPage {

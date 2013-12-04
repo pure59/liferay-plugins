@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -14,7 +14,6 @@
 
 package com.liferay.socialcoding.service.persistence;
 
-import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.kernel.cache.CacheRegistryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
@@ -31,6 +30,7 @@ import com.liferay.portal.kernel.util.InstanceFactory;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.PropsUtil;
+import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -49,6 +49,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 /**
  * The persistence implementation for the j i r a change item service.
@@ -115,6 +116,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the matching j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findByJiraChangeGroupId(long jiraChangeGroupId)
 		throws SystemException {
 		return findByJiraChangeGroupId(jiraChangeGroupId, QueryUtil.ALL_POS,
@@ -134,6 +136,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the range of matching j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findByJiraChangeGroupId(
 		long jiraChangeGroupId, int start, int end) throws SystemException {
 		return findByJiraChangeGroupId(jiraChangeGroupId, start, end, null);
@@ -153,6 +156,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the ordered range of matching j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findByJiraChangeGroupId(
 		long jiraChangeGroupId, int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
@@ -264,6 +268,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a matching j i r a change item could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem findByJiraChangeGroupId_First(
 		long jiraChangeGroupId, OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeItemException, SystemException {
@@ -294,6 +299,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the first matching j i r a change item, or <code>null</code> if a matching j i r a change item could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem fetchByJiraChangeGroupId_First(
 		long jiraChangeGroupId, OrderByComparator orderByComparator)
 		throws SystemException {
@@ -316,6 +322,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a matching j i r a change item could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem findByJiraChangeGroupId_Last(long jiraChangeGroupId,
 		OrderByComparator orderByComparator)
 		throws NoSuchJIRAChangeItemException, SystemException {
@@ -346,10 +353,15 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the last matching j i r a change item, or <code>null</code> if a matching j i r a change item could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem fetchByJiraChangeGroupId_Last(
 		long jiraChangeGroupId, OrderByComparator orderByComparator)
 		throws SystemException {
 		int count = countByJiraChangeGroupId(jiraChangeGroupId);
+
+		if (count == 0) {
+			return null;
+		}
 
 		List<JIRAChangeItem> list = findByJiraChangeGroupId(jiraChangeGroupId,
 				count - 1, count, orderByComparator);
@@ -371,6 +383,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a j i r a change item with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem[] findByJiraChangeGroupId_PrevAndNext(
 		long jiraChangeItemId, long jiraChangeGroupId,
 		OrderByComparator orderByComparator)
@@ -513,6 +526,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @param jiraChangeGroupId the jira change group ID
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeByJiraChangeGroupId(long jiraChangeGroupId)
 		throws SystemException {
 		for (JIRAChangeItem jiraChangeItem : findByJiraChangeGroupId(
@@ -528,6 +542,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the number of matching j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countByJiraChangeGroupId(long jiraChangeGroupId)
 		throws SystemException {
 		FinderPath finderPath = FINDER_PATH_COUNT_BY_JIRACHANGEGROUPID;
@@ -577,11 +592,16 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	private static final String _FINDER_COLUMN_JIRACHANGEGROUPID_JIRACHANGEGROUPID_2 =
 		"jiraChangeItem.jiraChangeGroupId = ?";
 
+	public JIRAChangeItemPersistenceImpl() {
+		setModelClass(JIRAChangeItem.class);
+	}
+
 	/**
 	 * Caches the j i r a change item in the entity cache if it is enabled.
 	 *
 	 * @param jiraChangeItem the j i r a change item
 	 */
+	@Override
 	public void cacheResult(JIRAChangeItem jiraChangeItem) {
 		EntityCacheUtil.putResult(JIRAChangeItemModelImpl.ENTITY_CACHE_ENABLED,
 			JIRAChangeItemImpl.class, jiraChangeItem.getPrimaryKey(),
@@ -595,6 +615,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 *
 	 * @param jiraChangeItems the j i r a change items
 	 */
+	@Override
 	public void cacheResult(List<JIRAChangeItem> jiraChangeItems) {
 		for (JIRAChangeItem jiraChangeItem : jiraChangeItems) {
 			if (EntityCacheUtil.getResult(
@@ -661,6 +682,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @param jiraChangeItemId the primary key for the new j i r a change item
 	 * @return the new j i r a change item
 	 */
+	@Override
 	public JIRAChangeItem create(long jiraChangeItemId) {
 		JIRAChangeItem jiraChangeItem = new JIRAChangeItemImpl();
 
@@ -678,9 +700,10 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a j i r a change item with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem remove(long jiraChangeItemId)
 		throws NoSuchJIRAChangeItemException, SystemException {
-		return remove(Long.valueOf(jiraChangeItemId));
+		return remove((Serializable)jiraChangeItemId);
 	}
 
 	/**
@@ -798,7 +821,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 			if ((jiraChangeItemModelImpl.getColumnBitmask() &
 					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_JIRACHANGEGROUPID.getColumnBitmask()) != 0) {
 				Object[] args = new Object[] {
-						Long.valueOf(jiraChangeItemModelImpl.getOriginalJiraChangeGroupId())
+						jiraChangeItemModelImpl.getOriginalJiraChangeGroupId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_JIRACHANGEGROUPID,
@@ -807,7 +830,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 					args);
 
 				args = new Object[] {
-						Long.valueOf(jiraChangeItemModelImpl.getJiraChangeGroupId())
+						jiraChangeItemModelImpl.getJiraChangeGroupId()
 					};
 
 				FinderCacheUtil.removeResult(FINDER_PATH_COUNT_BY_JIRACHANGEGROUPID,
@@ -850,13 +873,24 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 *
 	 * @param primaryKey the primary key of the j i r a change item
 	 * @return the j i r a change item
-	 * @throws com.liferay.portal.NoSuchModelException if a j i r a change item with the primary key could not be found
+	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a j i r a change item with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
 	@Override
 	public JIRAChangeItem findByPrimaryKey(Serializable primaryKey)
-		throws NoSuchModelException, SystemException {
-		return findByPrimaryKey(((Long)primaryKey).longValue());
+		throws NoSuchJIRAChangeItemException, SystemException {
+		JIRAChangeItem jiraChangeItem = fetchByPrimaryKey(primaryKey);
+
+		if (jiraChangeItem == null) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			}
+
+			throw new NoSuchJIRAChangeItemException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
+		}
+
+		return jiraChangeItem;
 	}
 
 	/**
@@ -867,20 +901,10 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @throws com.liferay.socialcoding.NoSuchJIRAChangeItemException if a j i r a change item with the primary key could not be found
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public JIRAChangeItem findByPrimaryKey(long jiraChangeItemId)
 		throws NoSuchJIRAChangeItemException, SystemException {
-		JIRAChangeItem jiraChangeItem = fetchByPrimaryKey(jiraChangeItemId);
-
-		if (jiraChangeItem == null) {
-			if (_log.isWarnEnabled()) {
-				_log.warn(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + jiraChangeItemId);
-			}
-
-			throw new NoSuchJIRAChangeItemException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
-				jiraChangeItemId);
-		}
-
-		return jiraChangeItem;
+		return findByPrimaryKey((Serializable)jiraChangeItemId);
 	}
 
 	/**
@@ -893,20 +917,8 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	@Override
 	public JIRAChangeItem fetchByPrimaryKey(Serializable primaryKey)
 		throws SystemException {
-		return fetchByPrimaryKey(((Long)primaryKey).longValue());
-	}
-
-	/**
-	 * Returns the j i r a change item with the primary key or returns <code>null</code> if it could not be found.
-	 *
-	 * @param jiraChangeItemId the primary key of the j i r a change item
-	 * @return the j i r a change item, or <code>null</code> if a j i r a change item with the primary key could not be found
-	 * @throws SystemException if a system exception occurred
-	 */
-	public JIRAChangeItem fetchByPrimaryKey(long jiraChangeItemId)
-		throws SystemException {
 		JIRAChangeItem jiraChangeItem = (JIRAChangeItem)EntityCacheUtil.getResult(JIRAChangeItemModelImpl.ENTITY_CACHE_ENABLED,
-				JIRAChangeItemImpl.class, jiraChangeItemId);
+				JIRAChangeItemImpl.class, primaryKey);
 
 		if (jiraChangeItem == _nullJIRAChangeItem) {
 			return null;
@@ -919,20 +931,20 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 				session = openSession();
 
 				jiraChangeItem = (JIRAChangeItem)session.get(JIRAChangeItemImpl.class,
-						Long.valueOf(jiraChangeItemId));
+						primaryKey);
 
 				if (jiraChangeItem != null) {
 					cacheResult(jiraChangeItem);
 				}
 				else {
 					EntityCacheUtil.putResult(JIRAChangeItemModelImpl.ENTITY_CACHE_ENABLED,
-						JIRAChangeItemImpl.class, jiraChangeItemId,
+						JIRAChangeItemImpl.class, primaryKey,
 						_nullJIRAChangeItem);
 				}
 			}
 			catch (Exception e) {
 				EntityCacheUtil.removeResult(JIRAChangeItemModelImpl.ENTITY_CACHE_ENABLED,
-					JIRAChangeItemImpl.class, jiraChangeItemId);
+					JIRAChangeItemImpl.class, primaryKey);
 
 				throw processException(e);
 			}
@@ -945,11 +957,25 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	}
 
 	/**
+	 * Returns the j i r a change item with the primary key or returns <code>null</code> if it could not be found.
+	 *
+	 * @param jiraChangeItemId the primary key of the j i r a change item
+	 * @return the j i r a change item, or <code>null</code> if a j i r a change item with the primary key could not be found
+	 * @throws SystemException if a system exception occurred
+	 */
+	@Override
+	public JIRAChangeItem fetchByPrimaryKey(long jiraChangeItemId)
+		throws SystemException {
+		return fetchByPrimaryKey((Serializable)jiraChangeItemId);
+	}
+
+	/**
 	 * Returns all the j i r a change items.
 	 *
 	 * @return the j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findAll() throws SystemException {
 		return findAll(QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
@@ -966,6 +992,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the range of j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findAll(int start, int end)
 		throws SystemException {
 		return findAll(start, end, null);
@@ -984,6 +1011,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the ordered range of j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public List<JIRAChangeItem> findAll(int start, int end,
 		OrderByComparator orderByComparator) throws SystemException {
 		boolean pagination = true;
@@ -1069,6 +1097,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 *
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public void removeAll() throws SystemException {
 		for (JIRAChangeItem jiraChangeItem : findAll()) {
 			remove(jiraChangeItem);
@@ -1081,6 +1110,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	 * @return the number of j i r a change items
 	 * @throws SystemException if a system exception occurred
 	 */
+	@Override
 	public int countAll() throws SystemException {
 		Long count = (Long)FinderCacheUtil.getResult(FINDER_PATH_COUNT_ALL,
 				FINDER_ARGS_EMPTY, this);
@@ -1112,6 +1142,11 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 		return count.intValue();
 	}
 
+	@Override
+	protected Set<String> getBadColumnNames() {
+		return _badColumnNames;
+	}
+
 	/**
 	 * Initializes the j i r a change item persistence.
 	 */
@@ -1126,7 +1161,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 
 				for (String listenerClassName : listenerClassNames) {
 					listenersList.add((ModelListener<JIRAChangeItem>)InstanceFactory.newInstance(
-							listenerClassName));
+							getClassLoader(), listenerClassName));
 				}
 
 				listeners = listenersList.toArray(new ModelListener[listenersList.size()]);
@@ -1154,6 +1189,9 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 	private static final boolean _HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE = GetterUtil.getBoolean(PropsUtil.get(
 				PropsKeys.HIBERNATE_CACHE_USE_SECOND_LEVEL_CACHE));
 	private static Log _log = LogFactoryUtil.getLog(JIRAChangeItemPersistenceImpl.class);
+	private static Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"jiraChangeItemId", "jiraChangeGroupId"
+			});
 	private static JIRAChangeItem _nullJIRAChangeItem = new JIRAChangeItemImpl() {
 			@Override
 			public Object clone() {
@@ -1167,6 +1205,7 @@ public class JIRAChangeItemPersistenceImpl extends BasePersistenceImpl<JIRAChang
 		};
 
 	private static CacheModel<JIRAChangeItem> _nullJIRAChangeItemCacheModel = new CacheModel<JIRAChangeItem>() {
+			@Override
 			public JIRAChangeItem toEntityModel() {
 				return _nullJIRAChangeItem;
 			}

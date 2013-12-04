@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -21,6 +21,7 @@ import com.liferay.knowledgebase.model.KBCommentSoap;
 import com.liferay.portal.kernel.bean.AutoEscapeBeanHandler;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSON;
+import com.liferay.portal.kernel.lar.StagedModelType;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -160,26 +161,32 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	public KBCommentModelImpl() {
 	}
 
+	@Override
 	public long getPrimaryKey() {
 		return _kbCommentId;
 	}
 
+	@Override
 	public void setPrimaryKey(long primaryKey) {
 		setKbCommentId(primaryKey);
 	}
 
+	@Override
 	public Serializable getPrimaryKeyObj() {
-		return new Long(_kbCommentId);
+		return _kbCommentId;
 	}
 
+	@Override
 	public void setPrimaryKeyObj(Serializable primaryKeyObj) {
 		setPrimaryKey(((Long)primaryKeyObj).longValue());
 	}
 
+	@Override
 	public Class<?> getModelClass() {
 		return KBComment.class;
 	}
 
+	@Override
 	public String getModelClassName() {
 		return KBComment.class.getName();
 	}
@@ -280,6 +287,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public String getUuid() {
 		if (_uuid == null) {
 			return StringPool.BLANK;
@@ -289,6 +297,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		}
 	}
 
+	@Override
 	public void setUuid(String uuid) {
 		if (_originalUuid == null) {
 			_originalUuid = _uuid;
@@ -302,19 +311,23 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public long getKbCommentId() {
 		return _kbCommentId;
 	}
 
+	@Override
 	public void setKbCommentId(long kbCommentId) {
 		_kbCommentId = kbCommentId;
 	}
 
 	@JSON
+	@Override
 	public long getGroupId() {
 		return _groupId;
 	}
 
+	@Override
 	public void setGroupId(long groupId) {
 		_columnBitmask |= GROUPID_COLUMN_BITMASK;
 
@@ -332,10 +345,12 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public long getCompanyId() {
 		return _companyId;
 	}
 
+	@Override
 	public void setCompanyId(long companyId) {
 		_columnBitmask |= COMPANYID_COLUMN_BITMASK;
 
@@ -353,10 +368,12 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public long getUserId() {
 		return _userId;
 	}
 
+	@Override
 	public void setUserId(long userId) {
 		_columnBitmask |= USERID_COLUMN_BITMASK;
 
@@ -369,10 +386,12 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		_userId = userId;
 	}
 
+	@Override
 	public String getUserUuid() throws SystemException {
 		return PortalUtil.getUserValue(getUserId(), "uuid", _userUuid);
 	}
 
+	@Override
 	public void setUserUuid(String userUuid) {
 		_userUuid = userUuid;
 	}
@@ -382,6 +401,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public String getUserName() {
 		if (_userName == null) {
 			return StringPool.BLANK;
@@ -391,30 +411,36 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		}
 	}
 
+	@Override
 	public void setUserName(String userName) {
 		_userName = userName;
 	}
 
 	@JSON
+	@Override
 	public Date getCreateDate() {
 		return _createDate;
 	}
 
+	@Override
 	public void setCreateDate(Date createDate) {
 		_createDate = createDate;
 	}
 
 	@JSON
+	@Override
 	public Date getModifiedDate() {
 		return _modifiedDate;
 	}
 
+	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_columnBitmask = -1L;
 
 		_modifiedDate = modifiedDate;
 	}
 
+	@Override
 	public String getClassName() {
 		if (getClassNameId() <= 0) {
 			return StringPool.BLANK;
@@ -423,6 +449,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		return PortalUtil.getClassName(getClassNameId());
 	}
 
+	@Override
 	public void setClassName(String className) {
 		long classNameId = 0;
 
@@ -434,10 +461,12 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public long getClassNameId() {
 		return _classNameId;
 	}
 
+	@Override
 	public void setClassNameId(long classNameId) {
 		_columnBitmask |= CLASSNAMEID_COLUMN_BITMASK;
 
@@ -455,10 +484,12 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public long getClassPK() {
 		return _classPK;
 	}
 
+	@Override
 	public void setClassPK(long classPK) {
 		_columnBitmask |= CLASSPK_COLUMN_BITMASK;
 
@@ -476,6 +507,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 	}
 
 	@JSON
+	@Override
 	public String getContent() {
 		if (_content == null) {
 			return StringPool.BLANK;
@@ -485,21 +517,31 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		}
 	}
 
+	@Override
 	public void setContent(String content) {
 		_content = content;
 	}
 
 	@JSON
+	@Override
 	public boolean getHelpful() {
 		return _helpful;
 	}
 
+	@Override
 	public boolean isHelpful() {
 		return _helpful;
 	}
 
+	@Override
 	public void setHelpful(boolean helpful) {
 		_helpful = helpful;
+	}
+
+	@Override
+	public StagedModelType getStagedModelType() {
+		return new StagedModelType(PortalUtil.getClassNameId(
+				KBComment.class.getName()), getClassNameId());
 	}
 
 	public long getColumnBitmask() {
@@ -551,6 +593,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		return kbCommentImpl;
 	}
 
+	@Override
 	public int compareTo(KBComment kbComment) {
 		int value = 0;
 
@@ -568,18 +611,15 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj == null) {
+		if (this == obj) {
+			return true;
+		}
+
+		if (!(obj instanceof KBComment)) {
 			return false;
 		}
 
-		KBComment kbComment = null;
-
-		try {
-			kbComment = (KBComment)obj;
-		}
-		catch (ClassCastException cce) {
-			return false;
-		}
+		KBComment kbComment = (KBComment)obj;
 
 		long primaryKey = kbComment.getPrimaryKey();
 
@@ -721,6 +761,7 @@ public class KBCommentModelImpl extends BaseModelImpl<KBComment>
 		return sb.toString();
 	}
 
+	@Override
 	public String toXmlString() {
 		StringBundler sb = new StringBundler(40);
 

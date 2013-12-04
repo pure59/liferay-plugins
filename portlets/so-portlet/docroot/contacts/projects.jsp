@@ -1,6 +1,6 @@
 <%--
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This file is part of Liferay Social Office. Liferay Social Office is free
  * software: you can redistribute it and/or modify it under the terms of the GNU
@@ -73,8 +73,8 @@ if (user2 != null) {
 
 		<div class="field-actions-toolbar">
 			<ul class="settings-actions">
-				<li class="action-field aui-component aui-settings-field lfr-token" data-extension="true" data-sectionId="projects" data-title="<%= LanguageUtil.get(pageContext, "projects") %>">
-					<div class="aui-settings-field-content">
+				<li class="action-field component lfr-token settings-field" data-extension="true" data-sectionId="projects" data-title="<%= LanguageUtil.get(pageContext, "projects") %>">
+					<div class="settings-field-content">
 						<span class="settings-label"><liferay-ui:message key="add" /></span>
 					</div>
 				</li>

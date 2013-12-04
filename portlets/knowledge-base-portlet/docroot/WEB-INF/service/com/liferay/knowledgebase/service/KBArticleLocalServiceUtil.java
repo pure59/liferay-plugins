@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -19,11 +19,12 @@ import com.liferay.portal.kernel.util.ReferenceRegistry;
 import com.liferay.portal.service.InvokableLocalService;
 
 /**
- * The utility for the k b article local service. This utility wraps {@link com.liferay.knowledgebase.service.impl.KBArticleLocalServiceImpl} and is the primary access point for service operations in application layer code running on the local server.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
+ * Provides the local service utility for KBArticle. This utility wraps
+ * {@link com.liferay.knowledgebase.service.impl.KBArticleLocalServiceImpl} and is the
+ * primary access point for service operations in application layer code running
+ * on the local server. Methods of this service will not have security checks
+ * based on the propagated JAAS credentials because this service can only be
+ * accessed from within the same VM.
  *
  * @author Brian Wing Shun Chan
  * @see KBArticleLocalService
@@ -167,10 +168,53 @@ public class KBArticleLocalServiceUtil {
 		return getService().dynamicQueryCount(dynamicQuery);
 	}
 
+	/**
+	* Returns the number of rows that match the dynamic query.
+	*
+	* @param dynamicQuery the dynamic query
+	* @param projection the projection to apply to the query
+	* @return the number of rows that match the dynamic query
+	* @throws SystemException if a system exception occurred
+	*/
+	public static long dynamicQueryCount(
+		com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery,
+		com.liferay.portal.kernel.dao.orm.Projection projection)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().dynamicQueryCount(dynamicQuery, projection);
+	}
+
 	public static com.liferay.knowledgebase.model.KBArticle fetchKBArticle(
 		long kbArticleId)
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return getService().fetchKBArticle(kbArticleId);
+	}
+
+	/**
+	* Returns the k b article with the matching UUID and company.
+	*
+	* @param uuid the k b article's UUID
+	* @param companyId the primary key of the company
+	* @return the matching k b article, or <code>null</code> if a matching k b article could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.knowledgebase.model.KBArticle fetchKBArticleByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchKBArticleByUuidAndCompanyId(uuid, companyId);
+	}
+
+	/**
+	* Returns the k b article matching the UUID and group.
+	*
+	* @param uuid the k b article's UUID
+	* @param groupId the primary key of the group
+	* @return the matching k b article, or <code>null</code> if a matching k b article could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.knowledgebase.model.KBArticle fetchKBArticleByUuidAndGroupId(
+		java.lang.String uuid, long groupId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return getService().fetchKBArticleByUuidAndGroupId(uuid, groupId);
 	}
 
 	/**
@@ -196,12 +240,28 @@ public class KBArticleLocalServiceUtil {
 	}
 
 	/**
-	* Returns the k b article with the UUID in the group.
+	* Returns the k b article with the matching UUID and company.
 	*
-	* @param uuid the UUID of k b article
-	* @param groupId the group id of the k b article
-	* @return the k b article
-	* @throws PortalException if a k b article with the UUID in the group could not be found
+	* @param uuid the k b article's UUID
+	* @param companyId the primary key of the company
+	* @return the matching k b article
+	* @throws PortalException if a matching k b article could not be found
+	* @throws SystemException if a system exception occurred
+	*/
+	public static com.liferay.knowledgebase.model.KBArticle getKBArticleByUuidAndCompanyId(
+		java.lang.String uuid, long companyId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return getService().getKBArticleByUuidAndCompanyId(uuid, companyId);
+	}
+
+	/**
+	* Returns the k b article matching the UUID and group.
+	*
+	* @param uuid the k b article's UUID
+	* @param groupId the primary key of the group
+	* @return the matching k b article
+	* @throws PortalException if a matching k b article could not be found
 	* @throws SystemException if a system exception occurred
 	*/
 	public static com.liferay.knowledgebase.model.KBArticle getKBArticleByUuidAndGroupId(
@@ -560,6 +620,12 @@ public class KBArticleLocalServiceUtil {
 		getService().updateKBArticlesPriorities(resourcePrimKeyToPriorityMap);
 	}
 
+	public static void updatePriority(long resourcePrimKey, double priority)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		getService().updatePriority(resourcePrimKey, priority);
+	}
+
 	public static com.liferay.knowledgebase.model.KBArticle updateStatus(
 		long userId, long resourcePrimKey, int status,
 		com.liferay.portal.service.ServiceContext serviceContext)
@@ -600,7 +666,7 @@ public class KBArticleLocalServiceUtil {
 	}
 
 	/**
-	 * @deprecated
+	 * @deprecated As of 6.2.0
 	 */
 	public void setService(KBArticleLocalService service) {
 	}

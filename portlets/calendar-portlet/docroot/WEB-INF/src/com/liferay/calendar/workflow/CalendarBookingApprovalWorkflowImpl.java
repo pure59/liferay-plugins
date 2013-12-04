@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2000-2012 Liferay, Inc. All rights reserved.
+ * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
  * the terms of the GNU Lesser General Public License as published by the Free
@@ -36,6 +36,7 @@ import java.util.Map;
 public class CalendarBookingApprovalWorkflowImpl
 	implements CalendarBookingApprovalWorkflow {
 
+	@Override
 	public Map<Long, List<String>> getActionNames(
 			PermissionChecker permissionChecker, long[] calendarBookingIds)
 		throws PortalException, SystemException {
@@ -69,12 +70,11 @@ public class CalendarBookingApprovalWorkflowImpl
 		return actionNames;
 	}
 
+	@Override
 	public void invokeTransition(
-			long userId, long calendarBookingId, String transitionName,
+			long userId, long calendarBookingId, int status,
 			ServiceContext serviceContext)
 		throws PortalException, SystemException {
-
-		int status = CalendarBookingWorkflowConstants.toStatus(transitionName);
 
 		if (status == CalendarBookingWorkflowConstants.STATUS_PENDING) {
 			CalendarBooking calendarBooking =
@@ -100,13 +100,14 @@ public class CalendarBookingApprovalWorkflowImpl
 		}
 	}
 
+	@Override
 	public void startWorkflow(
 			long userId, long calendarBookingId, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
 		invokeTransition(
 			userId, calendarBookingId,
-			CalendarBookingWorkflowConstants.LABEL_PENDING, serviceContext);
+			CalendarBookingWorkflowConstants.STATUS_PENDING, serviceContext);
 	}
 
 	protected boolean isAutoApproveCalendarBooking(
